@@ -32,5 +32,6 @@ namespace Styler {
 	}
 
 	Track::~Track(){
+		sf_close(file);
 	}
 }
