@@ -1,7 +1,8 @@
 #include <portaudio.h>
 #include <iostream>
+#include "player.h"
+#include <sndfile.h>
 
 int main() {
-	auto err = Pa_Initialize();
-	std::cout << "boi";
+	
 }
