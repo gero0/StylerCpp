@@ -1,6 +1,7 @@
 #include <sndfile.h>
 #include <string>
 #include "Enums.h"
+#include "Exceptions.h"
 
 namespace Styler {
 	class Track {
@@ -11,6 +12,7 @@ namespace Styler {
 		void setPosition(size_t position);
 		size_t getLength() const;
 		size_t read(float* buffer, size_t count);
+		float volume = 1;
 	private:
 		size_t position = 0;
 		size_t length = 0;

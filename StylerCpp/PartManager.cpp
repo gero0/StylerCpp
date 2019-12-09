@@ -10,10 +10,10 @@ namespace Styler {
 		
 	}
 
-	uint32_t PartManager::readStream(float* buffer, size_t offset, size_t count) {
+	size_t PartManager::readStream(float* buffer, size_t offset, size_t count) {
 		if (!currentPart)
 		{
-			throw new NullPointerException("Current part pointer is set to null!");
+			throw new NullPointerException;
 		}
 		return currentPart->readStream(buffer, offset, count);
 	}

@@ -1,5 +1,4 @@
 #include "Track.h"
-#include "Exceptions.h"
 
 namespace Styler {
 	Track::Track(std::string filepath, size_t channels, size_t sampleRate) {
@@ -18,6 +17,7 @@ namespace Styler {
 	void Track::setPosition(size_t position)
 	{
 		this->position = position;
+		sf_seek(file, position, SEEK_SET);
 	}
 	
 	size_t Track::getLength() const
@@ -28,6 +28,7 @@ namespace Styler {
 	size_t Track::read(float* buffer, size_t count)
 	{
 		auto samplesRead = sf_read_float(file, buffer, count);
+		position += samplesRead;
 		return samplesRead;
 	}
 

@@ -18,3 +18,9 @@ class InvalidAudioFileException : public std::exception {
 		return "File could not be loaded.\n Channel count and/or samplerate are not matching";
 	}
 };
+
+class KeyAlreadyExistsException : public std::exception {
+	const char* what() const throw() {
+		return "You tried to add a key that already exists in the map. If this exception has been thrown then the object doesn't allow that";
+	}
+};

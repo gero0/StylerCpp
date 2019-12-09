@@ -11,7 +11,7 @@ namespace Styler {
 	{
 	public:
 		PartManager();
-		uint32_t readStream(float* buffer, size_t offset, size_t count);
+		size_t readStream(float* buffer, size_t offset, size_t count);
 	private:
 		std::unordered_map<std::string, Part> tracks;
 		Part* currentPart;
