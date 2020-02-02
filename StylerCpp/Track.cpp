@@ -1,8 +1,19 @@
 #include "Track.h"
 
 namespace Styler {
+	
+
+	Track::Track() {
+	
+	}
+
 	Track::Track(std::string filepath, size_t channels, size_t sampleRate) {
+		fileInfo.format = 0;
 		file = sf_open(filepath.c_str(), SFM_READ, &fileInfo);
+		if (sf_error(file) != SF_ERR_NO_ERROR) {
+			throw new InvalidAudioFileException;
+		}
+		auto e = sf_error_number(sf_error(file));
 		if (channels != fileInfo.channels || sampleRate != fileInfo.samplerate) {
 			throw new InvalidAudioFileException;
 		}
@@ -27,7 +38,7 @@ namespace Styler {
 
 	size_t Track::read(float* buffer, size_t count)
 	{
-		auto samplesRead = sf_read_float(file, buffer, count);
+		auto samplesRead = sf_read_float(file, buffer, (sf_count_t)count);
 		position += samplesRead;
 		return samplesRead;
 	}

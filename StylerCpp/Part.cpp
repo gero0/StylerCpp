@@ -12,7 +12,7 @@ namespace Styler {
 		Returns number of read samples.
 	*/
 	size_t Part::readStream(float* buffer, size_t offset, size_t count) {
-		size_t lastPos = offset;
+		/*size_t lastPos = offset;
 		buffer += offset;
 		while (position < length && position - lastPos < count) {
 			*buffer = getSample(position);
@@ -22,7 +22,8 @@ namespace Styler {
 		if (looped && position == length - 1)
 			position = 0;
 
-		return (position - lastPos);
+		return (position - lastPos);*/
+		return 0;
 	}
 
 	Part::~Part() {

@@ -1,5 +1,6 @@
 #include "Instrument.h"
 #include <iostream>
+#include <windows.h>
 
 namespace Styler {
 
@@ -18,14 +19,13 @@ namespace Styler {
 	{
 
 		try {
-			Track newTrack(filePath, channels, sampleRate);
-
+			auto newTrack = std::make_unique<Track>(filePath, channels, sampleRate);
 			auto iter = tracks.find(chord);
 
 			if (iter != tracks.end())
 				throw new KeyAlreadyExistsException;
 
-			tracks.insert({ chord, newTrack });
+			tracks.insert({chord, std::move(newTrack)});
 		}
 		catch (const InvalidAudioFileException& e) {
 			throw e;
@@ -38,29 +38,62 @@ namespace Styler {
 
 	size_t Instrument::read(float* buffer, size_t count)
 	{
-		size_t bytesRead;
-		//clearing the sum buffer
-		std::fill(sumBuffer, sumBuffer + bufferSize, 0);
-		for (auto& track : tracks) {
-			bytesRead = track.second.read(trackBuffer, bufferSize);
+		size_t bytesRead = 0;
+		//clearing the buffers
+		memset(trackBuffer, 0, sizeof(float) * bufferSize);
+
+		if (tracks.find(currentChord) != tracks.end()) {
+			bytesRead = tracks[currentChord]->read(trackBuffer, bufferSize);
+
 			for (size_t i = 0; i < bytesRead; i++) {
-				// (sample * track volume * instrument volume) / number of tracks
-				sumBuffer[i] += (trackBuffer[i] * track.second.volume * volume) / tracks.size();
-				std::fill(trackBuffer, trackBuffer + bufferSize, 0);
+				buffer[i] = trackBuffer[i] * volume;
+			}
+		}	
+
+		if (tracks.find(Chord::Drum) != tracks.end()) {
+			bytesRead = tracks[Chord::Drum]->read(trackBuffer, bufferSize);
+
+			for (size_t i = 0; i < bytesRead; i++) {
+				buffer[i] = trackBuffer[i] * volume;
 			}
 		}
 
-		memcpy(buffer, sumBuffer, sizeof(float) * bytesRead);
+		for(auto& track : tracks) {
+			if(track.first != currentChord && track.first != Chord::Drum){
+				track.second->setPosition(track.second->getPosition() + bytesRead);
+			}
+		}
+
 		return bytesRead;
 	}
 
 	void Instrument::setChord(Chord c)
 	{
-		for (auto& track : tracks) {
-			track.second.volume = 0;
+		auto v = volume;
+		volume = 0;
+		currentChord = c;
+		while (volume < v) {
+			volume += 0.1;
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
+	}
 
-		tracks[c].volume = 1;
+	void Instrument::setPosition(size_t position)
+	{
+		for (auto& track : tracks) {
+			track.second->setPosition(position);
+		}
+	}
+
+	size_t Instrument::getPosition()
+	{
+		//if map is empty return 0
+		if (tracks.size() < 1)
+			return 0;
+		/*else return position of the first track
+		tracks must be equal length and are played all at once so 
+		they should always have the same position*/
+		return tracks.begin()->second->getPosition();
 	}
 
 	Instrument::~Instrument() {

@@ -10,12 +10,16 @@ namespace Styler {
 	class PartManager
 	{
 	public:
-		PartManager();
+		PartManager(size_t bufferSize);
 		size_t readStream(float* buffer, size_t offset, size_t count);
+		Instrument ins;
 	private:
+		size_t bSize = 0;
 		std::unordered_map<std::string, Part> tracks;
 		Part* currentPart;
-		PaStream *stream;
+
+		//temporary
+		
 	};
 }
 

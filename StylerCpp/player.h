@@ -9,7 +9,7 @@ namespace Styler {
 	It reads samples from the main buffer,
 	and plays the sound
 	*/
-	static int _stdcall portAudioCallback (
+	static int portAudioCallback (
 		const void* inputBuffer,
 		void* outputBuffer,
 		unsigned long framesPerBuffer,
@@ -21,17 +21,26 @@ namespace Styler {
 
 		memset(output, 0, sizeof(float) * framesPerBuffer * 2);
 		
-		//zast¹piæ userData
-		//pManager.readStream(output, 0, framesPerBuffer * 2);
+		PartManager* manager = (PartManager*)userData;
+
+		manager->readStream(output, 0, framesPerBuffer * 2);
 	
 		return paContinue;
 	}
 
 	class Player {
+	public:
 		//The number of samples read by last call of the portAudioCallback
-		int samplesRead = 0;	
+		int samplesRead = 0;
 		//Pointer to trackManager	
+		Player();
+		~Player();
+		bool initialize();
+		void play();
+		void stop();
+	private:
 		PartManager pManager;
+		PaStream* stream;
 	};
 }
 

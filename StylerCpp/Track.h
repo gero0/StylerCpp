@@ -6,6 +6,7 @@
 namespace Styler {
 	class Track {
 	public:
+		Track();
 		Track(std::string filepath, size_t channels = 2, size_t sampleRate = 44100);
 		~Track();
 		size_t getPosition() const;
