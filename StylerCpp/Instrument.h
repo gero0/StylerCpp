@@ -12,21 +12,22 @@ namespace Styler {
 	{
 	public:
 		Instrument(size_t bufferSize);
+		Instrument(const Instrument&) = delete;
+		Instrument(Instrument&& other) noexcept;
 		void setVolume(float volume);
 		void addTrack(Chord chord, std::string filePath, int channels=2, int sampleRate=44100);
 		size_t read(float* buffer, size_t count);
 		void setChord(Chord c);
 		void setPosition(size_t position);
+		void setProportionalPosition(float position);
 		size_t getPosition();
 		~Instrument();
 	private:
 		float volume = 1.0f;
 		size_t bufferSize;
 		std::unordered_map<Chord, std::unique_ptr<Track> > tracks;
-		float* sumBuffer;
 		float* trackBuffer;
-		//Change to chord Drum later
-		Chord currentChord = Chord::C;
+		Chord currentChord = Chord::None;
 	};
 }
 

@@ -1,11 +1,6 @@
 #include "Track.h"
 
 namespace Styler {
-	
-
-	Track::Track() {
-	
-	}
 
 	Track::Track(std::string filepath, size_t channels, size_t sampleRate) {
 		fileInfo.format = 0;
@@ -20,6 +15,15 @@ namespace Styler {
 		length = fileInfo.frames;
 	}
 
+	Track::Track(Track&& other) noexcept{
+		position = other.position;
+		length = other.length;
+		filepath = other.filepath;
+		fileInfo = other.fileInfo;
+		file = other.file;
+		other.file = nullptr;
+	}
+
 	size_t Track::getPosition() const
 	{
 		return position;
@@ -27,8 +31,18 @@ namespace Styler {
 
 	void Track::setPosition(size_t position)
 	{
+		//TODO: Check for errors (check libsndfile documentation)
+
 		this->position = position;
 		sf_seek(file, position, SEEK_SET);
+	}
+
+	void Track::setProportionalPosition(float position)
+	{
+		if (position < 0 || position > 1)
+			throw new ArgumentException;
+
+		setPosition((double)position * length);
 	}
 	
 	size_t Track::getLength() const
@@ -44,6 +58,7 @@ namespace Styler {
 	}
 
 	Track::~Track(){
-		sf_close(file);
+		if(file != nullptr) 
+			sf_close(file);
 	}
 }

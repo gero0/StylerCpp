@@ -33,12 +33,35 @@ namespace Styler
 	}
 
 	void Player::play() {
+		
+		Part part(bufferSize);
+
+		Instrument ins(bufferSize);
+		ins.addTrack(Chord::Drum, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 01 - Audio - Drums.wav");
+		Instrument ins2(bufferSize);
+		ins2.addTrack(Chord::C, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 02 - Audio - Bas C.wav");
+		ins2.addTrack(Chord::F, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 03 - Audio - Bas F.wav");
+		Instrument ins3(bufferSize);
+		ins3.addTrack(Chord::C, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 05 - Audio - Gitara C.wav");
+		ins3.addTrack(Chord::F, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 06 - Audio - Gitara F.wav");
+
+		part.addInstrument("Drums", std::move(ins));
+		part.addInstrument("Bas", std::move(ins2));
+		part.addInstrument("Gitara", std::move(ins3));
+
+		pManager.addPart("main_a", std::move(part));
+		pManager.setPart("main_a");
+		pManager.setChord(Chord::C);
+		
 		Pa_StartStream(stream);
-		//temporary;
-		Sleep(1500);
-		pManager.ins.setChord(Chord::F);
-		Sleep(1500);
-		pManager.ins.setChord(Chord::C);
+
+		Sleep(2000);
+
+		pManager.setChord(Chord::F);
+
+		Sleep(4000);
+
+		pManager.setChord(Chord::C);
 	}
 
 	void Player::stop() {

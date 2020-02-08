@@ -10,5 +10,5 @@ int main() {
 	player.initialize();
 	player.play();
 
-	Sleep(10000);
+	Sleep(20000);
 }

@@ -7,24 +7,70 @@
 #include <iostream>
 
 namespace Styler {
-	PartManager::PartManager(size_t bufferSize) : ins(bufferSize){
+	PartManager::PartManager(size_t bufferSize) {
 		bSize = bufferSize;
 		currentPart = nullptr;
-
-		//temporary
-		ins.addTrack(Chord::C, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 02 - Audio - Bas C.wav");
-		ins.addTrack(Chord::F, "C:\\Users\\kacpe\\Desktop\\Output\\main_a\\main_a - 03 - Audio - Bas F.wav");
 	}
 
 	size_t PartManager::readStream(float* buffer, size_t offset, size_t count) {
-		/*if (!currentPart)
+		if (!currentPart)
 		{
 			throw new NullPointerException;
 		}
-		return currentPart->readStream(buffer, offset, count);*/
-
-		size_t samplesRead = ins.read(buffer, count);
+		auto samplesRead = currentPart->readStream(buffer, offset, count);
+		if (samplesRead < count) {
+			if (currentPart->type == PartType::Main) {
+				currentPart->setPosition(0);
+			}
+		}
 
 		return samplesRead;
+	}
+
+	void PartManager::addPart(std::string partName, Part part) {
+		parts.insert({ partName, std::move(part) });
+	}
+
+	void PartManager::setPart(std::string partName)
+	{
+		auto iter = parts.find(partName);
+
+		if (iter != parts.end()) {
+			currentPart = &(iter->second);
+		}
+	}
+
+	void PartManager::setVolume(std::string instrument, float volume)
+	{
+		for (auto& part : parts) {
+			part.second.changeVolume(instrument, volume);
+		}
+	}
+
+	void PartManager::setChord(Chord chord)
+	{
+		for (auto& part : parts) {
+			part.second.setChord(chord);
+		}
+	}
+
+	void PartManager::setPosition(size_t position)
+	{
+		if (currentPart)
+			currentPart->setPosition(position);
+	}
+
+	void PartManager::setProportionalPosition(float position)
+	{
+		if (currentPart)
+			currentPart->setProportionalPosition(position);
+	}
+
+	std::vector<std::string> PartManager::getInstrumentNames()
+	{
+		if(!currentPart)
+			return std::vector<std::string>();
+
+		return currentPart->getInstrumentNames();
 	}
 }

@@ -6,8 +6,18 @@ namespace Styler {
 
 	Instrument::Instrument(size_t bufferSize){
 		this->bufferSize = bufferSize;
-		sumBuffer = new float[bufferSize];
+		
 		trackBuffer = new float[bufferSize];
+	}
+
+	Instrument::Instrument(Instrument&& other) noexcept{
+		volume = other.volume;
+		bufferSize = other.bufferSize;
+		//moving tracks map
+		tracks.merge(other.tracks);
+		trackBuffer = other.trackBuffer;
+		currentChord = other.currentChord;
+		other.trackBuffer = nullptr;
 	}
 
 	void Instrument::setVolume(float volume)
@@ -17,7 +27,6 @@ namespace Styler {
 
 	void Instrument::addTrack(Chord chord, std::string filePath, int channels, int sampleRate)
 	{
-
 		try {
 			auto newTrack = std::make_unique<Track>(filePath, channels, sampleRate);
 			auto iter = tracks.find(chord);
@@ -33,7 +42,6 @@ namespace Styler {
 		catch (const std::exception& e) {
 			throw e;
 		}
-		
 	}
 
 	size_t Instrument::read(float* buffer, size_t count)
@@ -69,19 +77,23 @@ namespace Styler {
 
 	void Instrument::setChord(Chord c)
 	{
-		auto v = volume;
-		volume = 0;
+		/*auto v = volume;
+		volume = 0;*/
 		currentChord = c;
-		while (volume < v) {
-			volume += 0.1;
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
+		//volume = v;
 	}
 
 	void Instrument::setPosition(size_t position)
 	{
 		for (auto& track : tracks) {
 			track.second->setPosition(position);
+		}
+	}
+
+	void Instrument::setProportionalPosition(float position)
+	{
+		for (auto& track : tracks) {
+			track.second->setProportionalPosition(position);
 		}
 	}
 
@@ -97,7 +109,6 @@ namespace Styler {
 	}
 
 	Instrument::~Instrument() {
-		delete sumBuffer;
 		delete trackBuffer;
 	}
 }
