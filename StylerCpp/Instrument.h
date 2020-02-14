@@ -27,6 +27,7 @@ namespace Styler {
 		size_t bufferSize;
 		std::unordered_map<Chord, std::unique_ptr<Track> > tracks;
 		float* trackBuffer;
+		float* temp;
 		Chord currentChord = Chord::None;
 	};
 }

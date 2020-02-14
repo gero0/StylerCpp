@@ -8,7 +8,7 @@
 
 namespace Styler 
 {
-	const size_t bufferSize = 32;
+	const size_t bufferSize = 64;
 
 	Player::Player() : pManager(bufferSize){
 		stream = nullptr;
@@ -54,18 +54,20 @@ namespace Styler
 		pManager.setChord(Chord::C);
 		
 		Pa_StartStream(stream);
-
-		Sleep(2000);
-
-		pManager.setChord(Chord::F);
-
-		Sleep(4000);
-
-		pManager.setChord(Chord::C);
+		playing = true;
 	}
 
 	void Player::stop() {
 		Pa_StopStream(stream);
+		playing = false;
+	}
+
+	void Player::playPause()
+	{
+		if (playing)
+			stop();   
+		else
+			play();
 	}
 
 	Player::~Player() {

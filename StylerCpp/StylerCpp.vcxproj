@@ -83,6 +83,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>libsndfile-1.lib;portaudio_x86.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\kacpe\Desktop\C\lib\libsndfile\lib;C:\Users\kacpe\Desktop\C\lib\portaudio\build\msvc\Win32\Debug</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -98,6 +99,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>libsndfile-1.lib;portaudio_x64.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\kacpe\Desktop\C\lib\libsndfile\lib;C:\Users\kacpe\Desktop\C\lib\portaudio\build\msvc\x64\Debug</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,6 +143,7 @@
   <ItemGroup>
     <ClCompile Include="Instrument.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Part.cpp" />
     <ClCompile Include="PartManager.cpp" />
@@ -150,6 +153,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Instrument.h" />
+    <ClInclude Include="MainWindow.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Part.h" />
     <ClInclude Include="PartManager.h" />

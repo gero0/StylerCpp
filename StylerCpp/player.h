@@ -23,7 +23,7 @@ namespace Styler {
 		
 		PartManager* manager = (PartManager*)userData;
 
-		manager->readStream(output, 0, framesPerBuffer * 2);
+		manager->readStream(output, 0, (double)framesPerBuffer * 2);
 	
 		return paContinue;
 	}
@@ -38,8 +38,11 @@ namespace Styler {
 		bool initialize();
 		void play();
 		void stop();
-	private:
+		void playPause();
+		//replace with state later?
+		bool playing = false;
 		PartManager pManager;
+	private:
 		PaStream* stream;
 	};
 }

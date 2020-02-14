@@ -8,6 +8,7 @@ namespace Styler {
 		this->bufferSize = bufferSize;
 		
 		trackBuffer = new float[bufferSize];
+		temp = new float[bufferSize];
 	}
 
 	Instrument::Instrument(Instrument&& other) noexcept{
@@ -16,8 +17,10 @@ namespace Styler {
 		//moving tracks map
 		tracks.merge(other.tracks);
 		trackBuffer = other.trackBuffer;
+		temp = other.temp;
 		currentChord = other.currentChord;
 		other.trackBuffer = nullptr;
+		other.temp = nullptr;
 	}
 
 	void Instrument::setVolume(float volume)
@@ -46,41 +49,45 @@ namespace Styler {
 
 	size_t Instrument::read(float* buffer, size_t count)
 	{
-		size_t bytesRead = 0;
+		size_t samplesRead = 0;
 		//clearing the buffers
-		memset(trackBuffer, 0, sizeof(float) * bufferSize);
+		//memset(trackBuffer, 0, sizeof(float) * bufferSize);
+		std::fill(trackBuffer, trackBuffer + count - 1, 0);
 
 		if (tracks.find(currentChord) != tracks.end()) {
-			bytesRead = tracks[currentChord]->read(trackBuffer, bufferSize);
+			samplesRead = tracks[currentChord]->read(trackBuffer, bufferSize);
 
-			for (size_t i = 0; i < bytesRead; i++) {
+			for (size_t i = 0; i < samplesRead; i++) {
 				buffer[i] = trackBuffer[i] * volume;
 			}
 		}	
 
-		if (tracks.find(Chord::Drum) != tracks.end()) {
-			bytesRead = tracks[Chord::Drum]->read(trackBuffer, bufferSize);
+		else if (tracks.find(Chord::Drum) != tracks.end()) {
+			samplesRead = tracks[Chord::Drum]->read(trackBuffer, bufferSize);
 
-			for (size_t i = 0; i < bytesRead; i++) {
+			for (size_t i = 0; i < samplesRead; i++) {
 				buffer[i] = trackBuffer[i] * volume;
 			}
 		}
 
 		for(auto& track : tracks) {
 			if(track.first != currentChord && track.first != Chord::Drum){
-				track.second->setPosition(track.second->getPosition() + bytesRead);
+				track.second->read(temp, bufferSize);
 			}
 		}
 
-		return bytesRead;
+		return samplesRead;
 	}
 
 	void Instrument::setChord(Chord c)
 	{
-		/*auto v = volume;
-		volume = 0;*/
+		auto v = volume;
+		volume = 0;
 		currentChord = c;
-		//volume = v;
+		while (volume < v) {
+			volume += 0.05f;
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}	
 	}
 
 	void Instrument::setPosition(size_t position)
@@ -110,6 +117,7 @@ namespace Styler {
 
 	Instrument::~Instrument() {
 		delete trackBuffer;
+		delete temp;
 	}
 }
 
