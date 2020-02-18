@@ -3,8 +3,10 @@
 #include "player.h"
 #include "PartManager.h"
 #include "Exceptions.h"
+#include "Loader.h"
 #include <stdlib.h>
 #include <cstdint>
+#include <filesystem>
 
 namespace Styler 
 {
@@ -13,6 +15,11 @@ namespace Styler
 	Player::Player() : pManager(bufferSize){
 		stream = nullptr;
 		Pa_Initialize();
+
+		
+		//temporary
+		Loader loader(bufferSize);
+		loader.loadFromJson(std::filesystem::path { "C:/Users/kacpe/Desktop/Output/style.json" } );
 	}
 
 	bool Player::initialize() {

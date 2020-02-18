@@ -42,13 +42,13 @@ namespace Styler
 	};
 
 	/// <summary>
-	///     Enum representing the type of style's track.
-	///     Intro tracks are tracks that are played once and then switched to a Main track.
-	///     Main tracks are tracks that loop and are the main part of the style.
-	///     Ending tracks are played once, and after they finish playing the style is stopped.
-	///     Fill tracks are used for transitions between tracks.
+	///     Enum representing the type of style's Part.
+	///     Intro parts are tracks that are played once and then switched to a Main track.
+	///     Main parts are tracks that loop and are the main part of the style.
+	///     Ending parts are played once, and after they finish playing the style is stopped.
+	///     Fill parts are used for transitions between parts.
 	/// </summary>
-	enum class TrackType
+	enum class PartType
 	{
 		Intro,
 		Fill,

@@ -5,14 +5,6 @@
 #include <cstdint>
 
 namespace Styler{
-	enum class PartType {
-		Main,
-		Intro,
-		Ending,
-		Fill,
-		Break
-	};
-
 	class Part
 	{
 	public:

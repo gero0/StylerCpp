@@ -1,6 +1,8 @@
 //disable macros that conflict with gtk
 #define NOMINMAX
 
+//TODO: Remember to enable optimisation for release!
+
 #include <portaudio.h>
 #include <iostream>
 #include "player.h"

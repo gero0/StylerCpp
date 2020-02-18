@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "Loader.h"
 #include <iostream>
 
 namespace Styler {
