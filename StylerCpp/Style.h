@@ -6,8 +6,8 @@
 namespace Styler {
 	struct Style {
 		std::string name;
-		int tempo;
-		int metrum;
+		int tempo = 120;
+		int metrum = 4;
 		std::unordered_map<std::string, Part> parts;
 		std::vector<std::string> instruments;
 	};

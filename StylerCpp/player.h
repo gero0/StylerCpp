@@ -1,7 +1,7 @@
 #pragma once
 #include "portaudio.h"
-#include <sndfile.h>
 #include "PartManager.h"
+#include "Style.h"
 
 namespace Styler {
 	/*
@@ -30,20 +30,21 @@ namespace Styler {
 
 	class Player {
 	public:
-		//The number of samples read by last call of the portAudioCallback
-		int samplesRead = 0;
-		//Pointer to trackManager	
 		Player();
 		~Player();
+		//The number of samples read by last call of the portAudioCallback
+		int samplesRead = 0;
 		bool initialize();
 		void play();
 		void stop();
 		void playPause();
+		void loadStyle(Style style);
 		//replace with state later?
 		bool playing = false;
 		PartManager pManager;
 	private:
 		PaStream* stream;
+		Style style;
 	};
 }
 

@@ -3,19 +3,12 @@
 
 namespace Styler {
 	Part::Part(size_t bufferSize) {
-		instrumentBuffer = new float[bufferSize];
+		instrumentBuffer = { new float[bufferSize], std::default_delete<float[]>() };
 	}
 	
-	Part::Part(Part&& other) noexcept{
-		instrumentBuffer = other.instrumentBuffer;
-		//moving map
-		instruments.merge(other.instruments);
-		other.instrumentBuffer = nullptr;
-	}
-
 	//TODO: Add some checks later if necessary
 	void Part::addInstrument(std::string name, Instrument instrument) {
-		instruments.insert({ name, std::move(instrument) });
+		instruments.insert({ name, instrument });
 	}
 
 	void Part::changeVolume(std::string instrument, float volume)
@@ -67,8 +60,12 @@ namespace Styler {
 	size_t Part::readStream(float* buffer, size_t offset, size_t count) {
 		std::fill(buffer, buffer + count - 1, 0); //fill buffer with zeros
 		size_t samplesRead = 0;
+
+		if (instruments.size() < 1)
+			return 0;
+
 		for (auto& ins : instruments) {
-			samplesRead = ins.second.read(instrumentBuffer, count);
+			samplesRead = ins.second.read(instrumentBuffer.get(), count);
 			for (int i = 0; i < samplesRead; i++) {
 				buffer[i] += instrumentBuffer[i];
 			}
@@ -77,6 +74,5 @@ namespace Styler {
 	}
 
 	Part::~Part() {
-		delete[] instrumentBuffer;
 	}
 }

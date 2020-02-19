@@ -2,8 +2,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <string>
-#include <portaudio.h>
-#include <sndfile.h>
+
 #include <mutex>
 
 #include "Part.h"
@@ -14,6 +13,7 @@ namespace Styler {
 	public:
 		PartManager(size_t bufferSize);
 		size_t readStream(float* buffer, size_t offset, size_t count);
+		void moveParts(std::unordered_map<std::string, Part> partMap);
 		void addPart(std::string partname, Part part);
 		void setPart(std::string partName);
 		void setVolume(std::string instrument, float volume);
@@ -27,7 +27,7 @@ namespace Styler {
 		std::mutex accessLock;
 		size_t bSize = 0;
 		std::unordered_map<std::string, Part> parts;
-		Part* currentPart;
+		std::unordered_map<std::string, Part>::iterator currentPart;
 		Chord currentChord = Chord::None;
 
 		//temporary

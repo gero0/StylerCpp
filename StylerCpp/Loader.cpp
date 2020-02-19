@@ -77,10 +77,10 @@ namespace Styler {
 						instrument.addTrack(c, file);
 					}
 				}
-				p.addInstrument(ins, std::move(instrument));
+				p.addInstrument(ins, instrument);
 			}
 
-			s.parts.insert({ name, std::move(p) });
+			s.parts.insert({ name, p });
 		}
 		return s;
 	}	

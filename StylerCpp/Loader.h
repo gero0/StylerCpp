@@ -15,7 +15,7 @@ namespace Styler {
 
 		std::unordered_map<std::string, Chord> chordMap =
 		{
-			{ "Drum", Chord::Drum },
+			{ "Drums", Chord::Drum },
 			{ "C", Chord::C },
 			{ "D", Chord::D },
 			{ "E", Chord::E },

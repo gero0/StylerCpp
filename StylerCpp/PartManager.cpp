@@ -8,42 +8,40 @@
 namespace Styler {
 	PartManager::PartManager(size_t bufferSize) {
 		bSize = bufferSize;
-		currentPart = nullptr;
+		currentPart = parts.begin();
 	}
 
 	size_t PartManager::readStream(float* buffer, size_t offset, size_t count) {
-		if (!currentPart)
-		{
-			throw new NullPointerException;
-		}
-
 		accessLock.lock();
 
-		auto samplesRead = currentPart->readStream(buffer, offset, count);
+		auto samplesRead = currentPart->second.readStream(buffer, offset, count);
 		if (samplesRead < count) {
-			if (currentPart->type == PartType::Main) {
-				currentPart->setPosition(0);
+			if (currentPart->second.type == PartType::Main) {
+				currentPart->second.setPosition(0);
 			}
 		}
-
+		
 		accessLock.unlock();
 
 		return samplesRead;
 	}
 
+	void PartManager::moveParts(std::unordered_map<std::string, Part> partMap)
+	{
+		parts = partMap;
+		currentPart = parts.find("main_a");
+		setChord(Chord::C);
+	}
+
 	void PartManager::addPart(std::string partName, Part part) {
-		parts.insert({ partName, std::move(part) });
+		parts.insert({ partName, part });
 	}
 
 	void PartManager::setPart(std::string partName)
 	{
 		accessLock.lock();
 
-		auto iter = parts.find(partName);
-
-		if (iter != parts.end()) {
-			currentPart = &(iter->second);
-		}
+		currentPart = parts.find(partName);
 
 		accessLock.unlock();
 	}
@@ -60,9 +58,9 @@ namespace Styler {
 		if (currentChord == chord)
 			return;
 
-		currentChord = chord;
 
 		accessLock.lock();
+		currentChord = chord;
 
 		for (auto& part : parts) {
 			part.second.setChord(chord);
@@ -75,8 +73,7 @@ namespace Styler {
 	{
 		accessLock.lock();
 
-		if (currentPart)
-			currentPart->setPosition(position);
+		currentPart->second.setPosition(position);
 
 		accessLock.unlock();
 	}
@@ -85,17 +82,13 @@ namespace Styler {
 	{
 		accessLock.lock();
 
-		if (currentPart)
-			currentPart->setProportionalPosition(position);
+		currentPart->second.setProportionalPosition(position);
 
 		accessLock.unlock();
 	}
 
 	std::vector<std::string> PartManager::getInstrumentNames()
 	{
-		if(!currentPart)
-			return std::vector<std::string>();
-
-		return currentPart->getInstrumentNames();
+		return currentPart->second.getInstrumentNames();
 	}
 }

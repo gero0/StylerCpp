@@ -7,20 +7,8 @@ namespace Styler {
 	Instrument::Instrument(size_t bufferSize){
 		this->bufferSize = bufferSize;
 		
-		trackBuffer = new float[bufferSize];
-		temp = new float[bufferSize];
-	}
-
-	Instrument::Instrument(Instrument&& other) noexcept{
-		volume = other.volume;
-		bufferSize = other.bufferSize;
-		//moving tracks map
-		tracks.merge(other.tracks);
-		trackBuffer = other.trackBuffer;
-		temp = other.temp;
-		currentChord = other.currentChord;
-		other.trackBuffer = nullptr;
-		other.temp = nullptr;
+		trackBuffer = { new float[bufferSize], std::default_delete<float[]>() };
+		temp = { new float[bufferSize], std::default_delete<float[]>() };
 	}
 
 	void Instrument::setVolume(float volume)
@@ -31,13 +19,13 @@ namespace Styler {
 	void Instrument::addTrack(Chord chord, std::string filePath, int channels, int sampleRate)
 	{
 		try {
-			auto newTrack = std::make_unique<Track>(filePath, channels, sampleRate);
+			auto newTrack = std::make_shared<Track>(filePath, channels, sampleRate);
 			auto iter = tracks.find(chord);
 
 			if (iter != tracks.end())
 				throw new KeyAlreadyExistsException;
 
-			tracks.insert({chord, std::move(newTrack)});
+			tracks.insert({chord, newTrack});
 		}
 		catch (const InvalidAudioFileException& e) {
 			throw e;
@@ -52,10 +40,10 @@ namespace Styler {
 		size_t samplesRead = 0;
 		//clearing the buffers
 		//memset(trackBuffer, 0, sizeof(float) * bufferSize);
-		std::fill(trackBuffer, trackBuffer + count - 1, 0);
+		std::fill(trackBuffer.get(), trackBuffer.get() + count - 1, 0);
 
 		if (tracks.find(currentChord) != tracks.end()) {
-			samplesRead = tracks[currentChord]->read(trackBuffer, bufferSize);
+			samplesRead = tracks[currentChord]->read(trackBuffer.get(), bufferSize);
 
 			for (size_t i = 0; i < samplesRead; i++) {
 				buffer[i] = trackBuffer[i] * volume;
@@ -63,7 +51,7 @@ namespace Styler {
 		}	
 
 		else if (tracks.find(Chord::Drum) != tracks.end()) {
-			samplesRead = tracks[Chord::Drum]->read(trackBuffer, bufferSize);
+			samplesRead = tracks[Chord::Drum]->read(trackBuffer.get(), bufferSize);
 
 			for (size_t i = 0; i < samplesRead; i++) {
 				buffer[i] = trackBuffer[i] * volume;
@@ -72,7 +60,7 @@ namespace Styler {
 
 		for(auto& track : tracks) {
 			if(track.first != currentChord && track.first != Chord::Drum){
-				track.second->read(temp, bufferSize);
+				track.second->read(temp.get(), bufferSize);
 			}
 		}
 
@@ -81,13 +69,13 @@ namespace Styler {
 
 	void Instrument::setChord(Chord c)
 	{
-		auto v = volume;
-		volume = 0;
+		/*auto v = volume;
+		volume = 0;*/
 		currentChord = c;
-		while (volume < v) {
+		/*while (volume < v) {
 			volume += 0.05f;
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}	
+		}	*/
 	}
 
 	void Instrument::setPosition(size_t position)
@@ -116,8 +104,7 @@ namespace Styler {
 	}
 
 	Instrument::~Instrument() {
-		delete trackBuffer;
-		delete temp;
+
 	}
 }
 

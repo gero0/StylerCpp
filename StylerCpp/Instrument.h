@@ -12,8 +12,6 @@ namespace Styler {
 	{
 	public:
 		Instrument(size_t bufferSize);
-		Instrument(const Instrument&) = delete;
-		Instrument(Instrument&& other) noexcept;
 		void setVolume(float volume);
 		void addTrack(Chord chord, std::string filePath, int channels=2, int sampleRate=44100);
 		size_t read(float* buffer, size_t count);
@@ -25,9 +23,9 @@ namespace Styler {
 	private:
 		float volume = 1.0f;
 		size_t bufferSize;
-		std::unordered_map<Chord, std::unique_ptr<Track> > tracks;
-		float* trackBuffer;
-		float* temp;
+		std::unordered_map<Chord, std::shared_ptr<Track> > tracks;
+		std::shared_ptr<float[]> trackBuffer;
+		std::shared_ptr<float[]> temp;
 		Chord currentChord = Chord::None;
 	};
 }

@@ -1,5 +1,6 @@
-#include <sndfile.h>
 #include <string>
+#include <sndfile.h>
+#include <memory>
 #include "Enums.h"
 #include "Exceptions.h"
 
@@ -7,8 +8,6 @@ namespace Styler {
 	class Track {
 	public:
 		Track(std::string filepath, size_t channels = 2, size_t sampleRate = 44100);
-		Track(const Track&) = delete;
-		Track(Track&& other) noexcept;
 		~Track();
 		size_t getPosition() const;
 		void setPosition(size_t position);

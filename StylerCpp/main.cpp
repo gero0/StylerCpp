@@ -5,8 +5,7 @@
 
 #include <portaudio.h>
 #include <iostream>
-#include "player.h"
-#include <sndfile.h>
+
 #include "windows.h"
 #include "MainWindow.h"
 #include <gtkmm.h>

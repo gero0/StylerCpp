@@ -1,5 +1,5 @@
 #include "Track.h"
-
+#include <sndfile.h>
 namespace Styler {
 
 	Track::Track(std::string filepath, size_t channels, size_t sampleRate) {
@@ -13,15 +13,6 @@ namespace Styler {
 			throw new InvalidAudioFileException;
 		}
 		length = fileInfo.frames;
-	}
-
-	Track::Track(Track&& other) noexcept{
-		position = other.position;
-		length = other.length;
-		filepath = other.filepath;
-		fileInfo = other.fileInfo;
-		file = other.file;
-		other.file = nullptr;
 	}
 
 	size_t Track::getPosition() const
