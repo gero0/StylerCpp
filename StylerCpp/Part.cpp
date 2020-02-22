@@ -65,7 +65,11 @@ namespace Styler {
 			return 0;
 
 		for (auto& ins : instruments) {
-			samplesRead = ins.second.read(instrumentBuffer.get(), count);
+			auto sRead = ins.second.read(instrumentBuffer.get(), count);
+			//Needed to play drums only
+			if (sRead > samplesRead) {
+				samplesRead = sRead;
+			}
 			for (int i = 0; i < samplesRead; i++) {
 				buffer[i] += instrumentBuffer[i];
 			}

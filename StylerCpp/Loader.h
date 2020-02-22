@@ -1,5 +1,6 @@
 #pragma once
 #include "Style.h"
+#include "Enums.h"
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #include <unordered_map>
@@ -13,7 +14,16 @@ namespace Styler {
 	private:
 		size_t bufferSize;
 
-		std::unordered_map<std::string, Chord> chordMap =
+		std::unordered_map<std::string, PartType> typeMap
+		{
+			{ "Intro", PartType::Intro },
+			{ "Main", PartType::Main },
+			{ "Fill", PartType::Fill },
+			{ "Ending", PartType::Ending },
+			{ "Break", PartType::Break }
+		};
+
+		std::unordered_map<std::string, Chord> chordMap
 		{
 			{ "Drums", Chord::Drum },
 			{ "C", Chord::C },

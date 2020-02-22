@@ -43,7 +43,10 @@ namespace Styler {
 		
 		for (auto& part : j["tracks"]) {
 			Part p(bufferSize);
+			std::string typeStr = part["Type"];
+			p.type = typeMap[typeStr];
 			std::string name = part["Name"];
+			
 			
 			//need to make a copy because append modifies value permanently
 			auto dir = directory;

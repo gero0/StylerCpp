@@ -13,3 +13,6 @@
 *.log*
 *.ilk*
 *.*db
+Debug
+Release
+x64

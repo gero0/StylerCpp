@@ -10,28 +10,24 @@
 
 namespace Styler 
 {
+	const int channelCount = 2; //stereo
+	const int sampleRate = 44100;
 	const size_t bufferSize = 64;
 
 	Player::Player() : pManager(bufferSize){
 		stream = nullptr;
 		Pa_Initialize();
-		
-		//temporary
-		Loader loader(bufferSize);
-
-		style = loader.loadFromJson(std::filesystem::path { "C:/Users/kacpe/Desktop/Output/style.json" } );
-		pManager.moveParts(style.parts);
 	}
 
 	bool Player::initialize() {
 		auto error = Pa_OpenDefaultStream(&stream
 			, 0                     /* no input */
-			, 2         /* stereo out */
+			, channelCount			/* stereo out */
 			, paFloat32             /* floating point */
-			, 44100
+			, sampleRate
 			, bufferSize/2
 			, portAudioCallback
-			, &pManager);        /* our sndfile data struct */
+			, this);			/* our sndfile data struct */
 
 		if (error != paNoError) {
 			return false;
@@ -41,6 +37,8 @@ namespace Styler
 	}
 
 	void Player::play() {
+		//Need to call this in case stream was stopped before
+		Pa_StopStream(stream);
 		Pa_StartStream(stream);
 		playing = true;
 	}
@@ -48,9 +46,11 @@ namespace Styler
 	void Player::stop() {
 		Pa_StopStream(stream);
 		playing = false;
+		pManager.setPosition(0);
+		pManager.setChord(Chord::Drum);
 	}
 
-	void Player::playPause()
+	void Player::playStop()
 	{
 		if (playing)
 			stop();   
@@ -58,10 +58,16 @@ namespace Styler
 			play();
 	}
 
-	void Player::loadStyle(Style style)
+	void Player::loadFromJson(std::string filePath)
 	{
-		/*this->style = style;
-		pManager.moveParts(style.parts);*/
+		Loader loader(bufferSize);
+		style = loader.loadFromJson({ filePath });
+		pManager.moveParts(style.parts);
+	}
+
+	std::vector<std::string> Player::getInstrumentNames()
+	{
+		return style.instruments;
 	}
 
 	Player::~Player() {

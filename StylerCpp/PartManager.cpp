@@ -15,11 +15,6 @@ namespace Styler {
 		accessLock.lock();
 
 		auto samplesRead = currentPart->second.readStream(buffer, offset, count);
-		if (samplesRead < count) {
-			if (currentPart->second.type == PartType::Main) {
-				currentPart->second.setPosition(0);
-			}
-		}
 		
 		accessLock.unlock();
 
@@ -29,8 +24,14 @@ namespace Styler {
 	void PartManager::moveParts(std::unordered_map<std::string, Part> partMap)
 	{
 		parts = partMap;
-		currentPart = parts.find("main_a");
-		setChord(Chord::C);
+		//find first main track and set current part to it
+		currentPart = std::find_if(parts.begin(), parts.end(),
+			[](const std::pair<std::string, Part>& part) -> bool
+			{
+				return part.second.type == PartType::Main;
+			}
+		);
+		setChord(Chord::Drum);
 	}
 
 	void PartManager::addPart(std::string partName, Part part) {
@@ -85,10 +86,5 @@ namespace Styler {
 		currentPart->second.setProportionalPosition(position);
 
 		accessLock.unlock();
-	}
-
-	std::vector<std::string> PartManager::getInstrumentNames()
-	{
-		return currentPart->second.getInstrumentNames();
 	}
 }

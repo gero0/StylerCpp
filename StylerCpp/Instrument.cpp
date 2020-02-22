@@ -42,19 +42,19 @@ namespace Styler {
 		//memset(trackBuffer, 0, sizeof(float) * bufferSize);
 		std::fill(trackBuffer.get(), trackBuffer.get() + count - 1, 0);
 
-		if (tracks.find(currentChord) != tracks.end()) {
+		if (currentChord != Chord::Drum && tracks.find(currentChord) != tracks.end()) {
 			samplesRead = tracks[currentChord]->read(trackBuffer.get(), bufferSize);
 
 			for (size_t i = 0; i < samplesRead; i++) {
-				buffer[i] = trackBuffer[i] * volume;
+				buffer[i] = trackBuffer.get()[i]* volume;
 			}
-		}	
+		}
 
 		else if (tracks.find(Chord::Drum) != tracks.end()) {
 			samplesRead = tracks[Chord::Drum]->read(trackBuffer.get(), bufferSize);
 
 			for (size_t i = 0; i < samplesRead; i++) {
-				buffer[i] = trackBuffer[i] * volume;
+				buffer[i] = trackBuffer.get()[i] * volume;
 			}
 		}
 
