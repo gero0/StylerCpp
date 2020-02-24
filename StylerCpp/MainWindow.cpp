@@ -15,9 +15,14 @@ namespace Styler {
 		playStopButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::playStop));
 		loadButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::loadStyle));
 
+		Gtk::Image* image = Gtk::manage<Gtk::Image>(new Gtk::Image("icons/PlayPause.png"));
+		image->show();
+
 		loadButton.add_pixlabel("info.xpm", "Load Style");
 		unloadButton.add_pixlabel("info.xpm", "Unload Style");
-		playStopButton.add_pixlabel("info.xpm", "Play/Stop");
+		//playStopButton.add_pixlabel("info.xpm", "Play/Stop");
+		playStopButton.set_image(*image);
+		playStopButton.set_always_show_image(true);
 
 		add(grid);
 
@@ -77,12 +82,17 @@ namespace Styler {
 			std::replace(path.begin(), path.end(), '\\', '/');
 			player->loadFromJson(path);
 			addSliders();
+			addPartButtons();
 			break;
 		}
 	}
 
 	void MainWindow::sliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment, std::string instrument) {
 		player->pManager.setVolume(instrument, adjustment->get_value() / 100);
+	}
+
+	void MainWindow::partButtonHandler(std::string part) {
+		player->setPart(part);
 	}
 
 	void MainWindow::addSliders()
@@ -115,6 +125,17 @@ namespace Styler {
 			grid.attach(*slider, collumn, 1,1,1);
 			grid.attach(*label, collumn, 0,1,1);
 			collumn++;
+		}
+	}
+	
+	void MainWindow::addPartButtons()
+	{
+		for (const auto& part : player->getPartNames()) {
+			Gtk::Button* button = Gtk::manage<Gtk::Button>(new Gtk::Button);
+			button->add_label(part);
+			button->show();
+			button->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(*this, &MainWindow::partButtonHandler), part));
+			grid.add(*button);
 		}
 	}
 }

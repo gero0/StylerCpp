@@ -1,75 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="UI">
+      <UniqueIdentifier>{9c7a90a1-5887-432a-9bff-3ef502b9f225}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Player">
+      <UniqueIdentifier>{893383fe-995d-4817-8fec-87b0f6ac8db8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Other">
+      <UniqueIdentifier>{6efc31b7-e7f4-42e6-812b-e9d5f8a478e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Part.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PartManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Instrument.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Track.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="Loader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Metronome.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Part.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PartManager.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Track.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Part.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PartManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Instrument.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MainWindow.h">
+      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Track.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Exceptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="Style.h">
-      <Filter>Header Files</Filter>
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PartManager.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Part.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Metronome.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Instrument.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Exceptions.h">
+      <Filter>Other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

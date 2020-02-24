@@ -7,6 +7,8 @@
 
 
 namespace Styler {
+	using pMap = std::unordered_map<std::string, Part>;
+
 	class Player;
 
 	class PartManager
@@ -14,20 +16,23 @@ namespace Styler {
 	public:
 		PartManager(size_t bufferSize);
 		size_t readStream(float* buffer, size_t offset, size_t count);
-		void moveParts(std::unordered_map<std::string, Part> partMap);
+		void addParts(pMap partMap);
 		void addPart(std::string partname, Part part);
-		void setPart(std::string partName);
+		void setPart(std::string partName, float position = 0);
 		void setVolume(std::string instrument, float volume);
 		void setChord(Chord chord);
 		void setPosition(size_t position);
 		void setProportionalPosition(float position);
+		void changePart(std::string partName, bool isPlaying = false, float position = 0);
+
 		float masterVolume = 1.0f;
-		std::unordered_map<std::string, Part>::iterator currentPart;
+		pMap::iterator currentPart;
+		std::string nextPart = "";
 	private:
+		pMap parts;
 		float* sampleBuffer;
 		std::mutex accessLock;
-		size_t bSize = 0;
-		std::unordered_map<std::string, Part> parts;	
+		size_t bufferSize = 0;
 		Chord currentChord = Chord::None;
 
 		//temporary

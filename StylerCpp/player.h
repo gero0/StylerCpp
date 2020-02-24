@@ -2,8 +2,15 @@
 #include "portaudio.h"
 #include "PartManager.h"
 #include "Style.h"
+#include "Metronome.h"
 
 namespace Styler {
+
+	enum class PlayerState {
+		Playing,
+		Stopped,
+		NotLoaded
+	};
 
 	class Player {
 	public:
@@ -16,10 +23,12 @@ namespace Styler {
 		void stop();
 		void playStop();
 		void loadFromJson(std::string filePath);
+		void setPart(std::string trackName);
+		std::vector<std::string> getPartNames();
 		std::vector<std::string> getInstrumentNames();
-		//replace with state later?
-		bool playing = false;
 		PartManager pManager;
+		PlayerState state = PlayerState::NotLoaded;
+		Metronome metronome;
 	private:
 		PaStream* stream;
 		Style style;
@@ -51,14 +60,21 @@ namespace Styler {
 		auto framesRead = manager.readStream(output, 0, count);
 
 		if (framesRead < count) {
-			if (manager.currentPart->second.type == PartType::Main) {
-				manager.currentPart->second.setPosition(0);
-			}
-			if (manager.currentPart->second.type == PartType::Ending) {
-				player->playing = false;
-				manager.setPosition(0);
-				manager.setChord(Chord::Drum);
-				return paComplete;
+
+			switch (manager.currentPart->second.type) {
+				case PartType::Main:
+					manager.currentPart->second.setPosition(0);
+					break;
+				case PartType::Ending:
+					player->state = PlayerState::Stopped;
+					manager.setPosition(0);
+					manager.setChord(Chord::Drum);
+					player->metronome.stop();
+					return paComplete;
+					break;
+				default:
+					manager.setPart(manager.nextPart);
+					break;
 			}
 		}
 	

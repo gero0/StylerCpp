@@ -25,7 +25,7 @@ namespace Styler {
 		//TODO: Check for errors (check libsndfile documentation)
 
 		this->position = position;
-		sf_seek(file, position, SEEK_SET);
+		auto res = sf_seek(file, position, SEEK_SET);
 	}
 
 	void Track::setProportionalPosition(float position)

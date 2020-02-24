@@ -20,6 +20,8 @@ namespace Styler{
 		void setProportionalPosition(float position);
 		std::vector<std::string> getInstrumentNames();
 		PartType type = PartType::Main;
+		std::string fillTrack = "";
+		int length = 1;
 	private:
 		std::shared_ptr<float[]> instrumentBuffer;
 		std::unordered_map < std::string, Instrument > instruments;

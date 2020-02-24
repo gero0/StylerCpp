@@ -112,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\kacpe\Desktop\C\lib\libsndfile\include;C:\Users\kacpe\Desktop\C\lib\portaudio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\kacpe\Desktop\C\lib\libsndfile\include;C:\Users\kacpe\Desktop\C\lib\portaudio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +147,7 @@
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Metronome.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Part.cpp" />
     <ClCompile Include="PartManager.cpp" />
@@ -156,6 +159,7 @@
     <ClInclude Include="Instrument.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Metronome.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Part.h" />
     <ClInclude Include="PartManager.h" />

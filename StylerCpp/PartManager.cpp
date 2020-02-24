@@ -7,7 +7,7 @@
 
 namespace Styler {
 	PartManager::PartManager(size_t bufferSize) {
-		bSize = bufferSize;
+		this->bufferSize = bufferSize;
 		currentPart = parts.begin();
 	}
 
@@ -21,7 +21,7 @@ namespace Styler {
 		return samplesRead;
 	}
 
-	void PartManager::moveParts(std::unordered_map<std::string, Part> partMap)
+	void PartManager::addParts(pMap partMap)
 	{
 		parts = partMap;
 		//find first main track and set current part to it
@@ -38,13 +38,58 @@ namespace Styler {
 		parts.insert({ partName, part });
 	}
 
-	void PartManager::setPart(std::string partName)
+	void PartManager::setPart(std::string partName, float position )
 	{
 		accessLock.lock();
-
+		auto previousPart = currentPart;
 		currentPart = parts.find(partName);
-
+		currentPart->second.setProportionalPosition(position);
+		previousPart->second.setPosition(0);
 		accessLock.unlock();
+	}
+
+	void PartManager::changePart(std::string partName, bool isPlaying, float position)
+	{
+		//We don't need to do anything if we get request to change part to the same part
+		if (currentPart->first == partName)
+			return;
+
+		//In case nothing is playing right now...
+		if (!isPlaying) {
+			if (currentPart->second.type == PartType::Intro) {
+				//If currently intro is selected, clicking on another part will select it to be played after the intro
+				if (parts[partName].type == PartType::Intro) {
+					setPart(partName);
+				}
+				//If it's another intro part, just set it to play instead of current part
+				else {
+					nextPart = partName;
+				}
+			}
+			//If intro is not currently selected...
+			else {
+				//set current part
+				setPart(partName);
+				//if new part is an intro, set the first main track as a default next part
+				if (currentPart->second.type == PartType::Intro)
+					nextPart = std::find_if(parts.begin(), parts.end(),
+						[](const std::pair<std::string, Part>& part) -> bool
+						{
+							return part.second.type == PartType::Main;
+						}
+				)->first;
+			}
+		}
+		
+		//In case something is playing right now...
+		else {
+			if (currentPart->second.type == PartType::Intro) {
+				nextPart = partName;
+			}
+			else {
+				setPart(partName, position);
+			}
+		}
 	}
 
 	void PartManager::setVolume(std::string instrument, float volume)
@@ -58,7 +103,6 @@ namespace Styler {
 	{
 		if (currentChord == chord)
 			return;
-
 
 		accessLock.lock();
 		currentChord = chord;

@@ -21,6 +21,4 @@ int main(int argc, char** argv) {
 
 	auto res = app->run(window);
 	std::cout << res;
-
-	Sleep(20000);
 }

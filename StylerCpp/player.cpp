@@ -25,9 +25,9 @@ namespace Styler
 			, channelCount			/* stereo out */
 			, paFloat32             /* floating point */
 			, sampleRate
-			, bufferSize/2
+			, bufferSize/channelCount
 			, portAudioCallback
-			, this);			/* our sndfile data struct */
+			, this);			/* we give the callback function pointer to player so it can control it*/
 
 		if (error != paNoError) {
 			return false;
@@ -37,22 +37,27 @@ namespace Styler
 	}
 
 	void Player::play() {
-		//Need to call this in case stream was stopped before
+		if (state != PlayerState::Stopped)
+			return;
+
+		//Need to call StopStream in case stream was stopped by file reaching its end
 		Pa_StopStream(stream);
 		Pa_StartStream(stream);
-		playing = true;
+		state = PlayerState::Playing;
+		metronome.start();
 	}
 
 	void Player::stop() {
 		Pa_StopStream(stream);
-		playing = false;
 		pManager.setPosition(0);
 		pManager.setChord(Chord::Drum);
+		state = PlayerState::Stopped;
+		metronome.stop();
 	}
 
 	void Player::playStop()
 	{
-		if (playing)
+		if (state == PlayerState::Playing)
 			stop();   
 		else
 			play();
@@ -62,12 +67,36 @@ namespace Styler
 	{
 		Loader loader(bufferSize);
 		style = loader.loadFromJson({ filePath });
-		pManager.moveParts(style.parts);
+		pManager.addParts(style.parts);
+		state = PlayerState::Stopped;
+
+		metronome.metrum = style.metrum;
+		metronome.tempo = style.tempo;
+	}
+
+	void Player::setPart(std::string trackName)
+	{
+		if (metronome.isRunning()) {
+			int lastBeat = metronome.getBeat();
+			while (metronome.getBeat() == lastBeat)
+			{
+				//wait
+			}
+		}
+		pManager.changePart(trackName, state == PlayerState::Playing, (float)( metronome.getBeat() - 1 )/ style.metrum);
 	}
 
 	std::vector<std::string> Player::getInstrumentNames()
 	{
 		return style.instruments;
+	}
+
+	std::vector<std::string> Player::getPartNames() {
+		std::vector<std::string> names;
+		for (auto part : style.parts) {
+			names.push_back(part.first);
+		}
+		return names;
 	}
 
 	Player::~Player() {

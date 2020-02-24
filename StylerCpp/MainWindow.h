@@ -36,6 +36,8 @@ namespace Styler {
 		void playStop();
 		void loadStyle();
 		void addSliders();
+		void addPartButtons();
 		void sliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment, std::string instrument);
+		void partButtonHandler(std::string part);
 	};
 }

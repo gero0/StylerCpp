@@ -45,6 +45,25 @@ namespace Styler {
 			Part p(bufferSize);
 			std::string typeStr = part["Type"];
 			p.type = typeMap[typeStr];
+
+			//Part may not have filltrack and/or length defined.
+			//In this case default values are set.
+			//Since i don't know if there's a way to check if json object has
+			//a specific field, i'm just gonna rely on exceptions in this case
+			try {
+				p.fillTrack = part["FillTrack"];
+			}
+			catch (const std::exception & e) {
+				p.fillTrack = "";
+			}
+			
+			try {
+				p.length = part["Length"];
+			}
+			catch (const std::exception & e) {
+				p.length = 1;
+			}
+
 			std::string name = part["Name"];
 			
 			
