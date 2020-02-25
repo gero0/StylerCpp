@@ -76,13 +76,13 @@ namespace Styler
 
 	void Player::setPart(std::string trackName)
 	{
-		if (metronome.isRunning()) {
+		/*if (metronome.isRunning()) {
 			int lastBeat = metronome.getBeat();
 			while (metronome.getBeat() == lastBeat)
 			{
 				//wait
 			}
-		}
+		}*/
 		pManager.changePart(trackName, state == PlayerState::Playing, (float)( metronome.getBeat() - 1 )/ style.metrum);
 	}
 
@@ -90,10 +90,12 @@ namespace Styler
 	{
 		return style.instruments;
 	}
-
-	std::vector<std::string> Player::getPartNames() {
+	
+	std::vector<std::string> Player::getPartNames(bool full) {
 		std::vector<std::string> names;
 		for (auto part : style.parts) {
+			if (part.second.type == PartType::Fill && !full)
+				continue;
 			names.push_back(part.first);
 		}
 		return names;

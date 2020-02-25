@@ -11,6 +11,9 @@ namespace Styler {
 		bool onKeyPress(GdkEventKey*);
 		bool setChord(int key);
 	private:
+		const int standard_button_width = 64;
+		const int standard_button_height = 64;
+
 		Player* player;
 
 		std::unordered_map<int, Chord> chordMap{
@@ -38,6 +41,7 @@ namespace Styler {
 		void addSliders();
 		void addPartButtons();
 		void sliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment, std::string instrument);
+		void masterVolumeSliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment);
 		void partButtonHandler(std::string part);
 	};
 }

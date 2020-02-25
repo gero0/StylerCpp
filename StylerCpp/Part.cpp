@@ -71,7 +71,7 @@ namespace Styler {
 				samplesRead = sRead;
 			}
 			for (int i = 0; i < samplesRead; i++) {
-				buffer[i] += instrumentBuffer[i];
+				buffer[i] += instrumentBuffer[i] * (1.0/instruments.size());
 			}
 		}
 		return samplesRead;

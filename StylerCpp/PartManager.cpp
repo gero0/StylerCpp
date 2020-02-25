@@ -15,7 +15,11 @@ namespace Styler {
 		accessLock.lock();
 
 		auto samplesRead = currentPart->second.readStream(buffer, offset, count);
-		
+
+		for (int i = 0; i < samplesRead; i++) {
+			buffer[i] *= masterVolume;
+		}
+
 		accessLock.unlock();
 
 		return samplesRead;
@@ -85,6 +89,17 @@ namespace Styler {
 		else {
 			if (currentPart->second.type == PartType::Intro) {
 				nextPart = partName;
+			}
+			else if(currentPart->second.type == PartType::Main && parts[partName].type == PartType::Main){
+				setPart(parts[partName].fillTrack, position);
+				nextPart = partName;
+			}
+			else if (currentPart->second.type == PartType::Fill || currentPart->second.type == PartType::Break) {
+				nextPart = partName;
+			}
+			else if (parts[partName].type == PartType::Break) {
+				nextPart = currentPart->first;
+				setPart(partName);
 			}
 			else {
 				setPart(partName, position);

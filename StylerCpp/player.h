@@ -24,7 +24,9 @@ namespace Styler {
 		void playStop();
 		void loadFromJson(std::string filePath);
 		void setPart(std::string trackName);
-		std::vector<std::string> getPartNames();
+		//full - false - only tracks that can be selected manually
+		//full-true - all tracks
+		std::vector<std::string> getPartNames(bool full = false);
 		std::vector<std::string> getInstrumentNames();
 		PartManager pManager;
 		PlayerState state = PlayerState::NotLoaded;

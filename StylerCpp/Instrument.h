@@ -21,7 +21,7 @@ namespace Styler {
 		size_t getPosition();
 		~Instrument();
 	private:
-		float volume = 1.0f;
+		float volume = 0.5f;
 		size_t bufferSize;
 		std::unordered_map<Chord, std::shared_ptr<Track> > tracks;
 		std::shared_ptr<float[]> trackBuffer;

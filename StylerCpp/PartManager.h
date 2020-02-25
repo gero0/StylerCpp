@@ -25,7 +25,7 @@ namespace Styler {
 		void setProportionalPosition(float position);
 		void changePart(std::string partName, bool isPlaying = false, float position = 0);
 
-		float masterVolume = 1.0f;
+		float masterVolume = 0.5f;
 		pMap::iterator currentPart;
 		std::string nextPart = "";
 	private:
