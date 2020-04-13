@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "Loader.h"
+#include "Rectangle.h"
 
 #include <iostream>
 #include <algorithm>
@@ -14,12 +15,12 @@ namespace Styler {
 		this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::onKeyPress), false);
 
 
-		loadButton.add_pixlabel("info.xpm", "Load Style");
+		loadButton.add_label("Load Style");
 		loadButton.set_size_request(standard_button_width, standard_button_height);
 		loadButton.show();
 		loadButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::loadStyle));
 
-		unloadButton.add_pixlabel("info.xpm", "Unload Style");
+		unloadButton.add_label("Unload Style");
 		unloadButton.set_size_request(standard_button_width, standard_button_height);
 		unloadButton.show();
 
@@ -28,7 +29,6 @@ namespace Styler {
 		image->show();
 	
 		playStopButton.set_image(*image);
-		playStopButton.set_always_show_image(true);
 		playStopButton.set_size_request(standard_button_width, standard_button_height);
 		playStopButton.show();
 		playStopButton.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::playStop));
@@ -36,22 +36,35 @@ namespace Styler {
 		//Creating master volume slider
 		Glib::RefPtr<Gtk::Adjustment> adjustment = Gtk::Adjustment::create(50, 0.0, 101.0, 0.1, 1.0, 1.0);
 		Gtk::Scale* slider = Gtk::manage<Gtk::Scale>(new Gtk::Scale(adjustment, Gtk::Orientation::ORIENTATION_HORIZONTAL));
-		slider->set_size_request(400, standard_button_height);
+		slider->set_size_request(300, standard_button_height);
 		slider->show();
 		adjustment->signal_value_changed().connect(
 			sigc::bind<Glib::RefPtr<Gtk::Adjustment>>(sigc::mem_fun(*this, &MainWindow::masterVolumeSliderHandler), adjustment));
 
-		add(grid);
+		//Setting up the Audio devices combo box
+		for (auto& device : player->outputDevices) {
+			audioDevices.append(device->name + device->hostApi);
+		}
+		audioDevices.set_active(1);
+		audioDevices.show();
+		mainGrid.attach(audioDevices, 0, 1, 3, 1);
+		audioDevices.signal_changed().connect(sigc::mem_fun(*this,
+			&MainWindow::onDeviceChanged));
+		show_all_children();
 
-		//grid.set_row_homogeneous(true);
-		//grid.set_column_homogeneous(true);
-		grid.attach(loadButton, 0, 0, 1, 1);
-		grid.attach(loadButton, 0, 0, 1, 1);
-		grid.attach(unloadButton, 1, 0, 1, 1);
-		grid.attach(playStopButton, 2, 0, 1, 1);
-		grid.attach(*slider, 3, 0, 1, 1);
+		add(mainBox);
+
+		//mainGrid.set_row_homogeneous(true);
+		//mainGrid.set_column_homogeneous(true);
+		mainGrid.attach(loadButton, 0, 0, 1, 1);
+		mainGrid.attach(unloadButton, 1, 0, 1, 1);
+		mainGrid.attach(playStopButton, 2, 0, 1, 1);
+		mainGrid.attach(*slider, 3, 0, 1, 1);
 		
-		grid.show();	
+		mainGrid.show();
+
+		mainBox.add(mainGrid);
+		mainBox.show();
 	}
 
 	bool MainWindow::onKeyPress(GdkEventKey* event)
@@ -76,6 +89,7 @@ namespace Styler {
 		player->pManager.setChord(result->second);
 		return true;
 	}
+
 	void MainWindow::playStop()
 	{
 		player->playStop();
@@ -112,17 +126,17 @@ namespace Styler {
 
 	void MainWindow::partButtonHandler(std::string part) {
 		player->setPart(part);
+		drawLeds();
 	}
 
 	void MainWindow::addSliders()
 	{
-		//We added 3 buttons. We want sliders to appear in collumns on the right of buttons
-		//In case more buttons are added change this value
-		int collumn = 4;
+		int collumn = 0;
 
 		for (const auto& instrument : player->getInstrumentNames()) {	
 			
 			Gtk::Label* label = Gtk::manage<Gtk::Label>(new Gtk::Label());
+			label->set_size_request(standard_button_width, standard_button_height);
 			label->set_text(instrument);
 			label->show();
 
@@ -131,7 +145,7 @@ namespace Styler {
 			Gtk::Scale* slider = Gtk::manage<Gtk::Scale>(new Gtk::Scale(adjustment, Gtk::Orientation::ORIENTATION_VERTICAL));
 			slider->set_inverted(true);
 			slider->show();
-			slider->set_size_request(80, 600);
+			slider->set_size_request(80, 400);
 
 			//bind pointer and intrument to adjustment signal
 			adjustment->signal_value_changed().connect(
@@ -139,21 +153,45 @@ namespace Styler {
 				(sigc::mem_fun(*this, &MainWindow::sliderHandler), adjustment, instrument )
 			);
 		
-			grid.attach(*slider, collumn, 1,1,1);
-			grid.attach(*label, collumn, 0,1,1);
+			sliderGrid.attach(*slider, collumn, 2,1,1);
+			sliderGrid.attach(*label, collumn, 1,1,1);
 			collumn++;
 		}
+		sliderGrid.show();
+		mainBox.add(sliderGrid);
 	}
 	
+	//TODO: dew it
+	void MainWindow::drawLeds() {
+	
+	}
+
+	void MainWindow::onDeviceChanged()
+	{
+		auto index = audioDevices.get_active_row_number();
+		player->changeAudioDevice(index);
+	}
+
 	void MainWindow::addPartButtons()
 	{
-		for (const auto& part : player->getPartNames(false)) {
+		int collumn = 0;
+
+		auto parts = player->getPartNames(false);
+		partCount = parts.size();
+
+		buttonGrid.attach(ledGrid, 0, 0, partCount, 1);
+
+		for (const auto& part : parts) {	
 			Gtk::Button* button = Gtk::manage<Gtk::Button>(new Gtk::Button);
 			button->add_label(part);
 			button->show();
-			button->set_size_request(standard_button_width, standard_button_height);
+			button->set_size_request(standard_button_width, standard_button_height * (4.0/5));
 			button->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(*this, &MainWindow::partButtonHandler), part));
-			grid.add(*button);
+			buttonGrid.attach(*button, collumn, 1, 1, 1);
+			collumn++;
 		}
+
+		buttonGrid.show();
+		mainBox.add(buttonGrid);
 	}
 }

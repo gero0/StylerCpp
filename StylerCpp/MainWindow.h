@@ -1,6 +1,7 @@
 #pragma once
 #include <gtkmm.h>
 #include <unordered_map>
+#include <thread>
 #include "player.h"
 
 namespace Styler {
@@ -31,10 +32,18 @@ namespace Styler {
 			{ GDK_KEY_j, Chord::B }
 		};
 
-		Gtk::Grid grid;
+		Gtk::Box mainBox;
+		Gtk::Grid mainGrid;
+		Gtk::Grid sliderGrid;
+		Gtk::Grid buttonGrid;
+		Gtk::Grid ledGrid;
 		Gtk::Button loadButton;
 		Gtk::Button unloadButton;
 		Gtk::Button playStopButton;
+
+		Gtk::ComboBoxText audioDevices;
+
+		int partCount = 0;
 
 		void playStop();
 		void loadStyle();
@@ -43,5 +52,7 @@ namespace Styler {
 		void sliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment, std::string instrument);
 		void masterVolumeSliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment);
 		void partButtonHandler(std::string part);
+		void drawLeds();
+		void onDeviceChanged();
 	};
 }

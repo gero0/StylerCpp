@@ -52,7 +52,7 @@ namespace Styler {
 		accessLock.unlock();
 	}
 
-	void PartManager::changePart(std::string partName, bool isPlaying, float position)
+	void PartManager::changePart(std::string partName, bool isPlaying, Metronome* metro, int metrum)
 	{
 		//We don't need to do anything if we get request to change part to the same part
 		if (currentPart->first == partName)
@@ -86,12 +86,23 @@ namespace Styler {
 		}
 		
 		//In case something is playing right now...
+		//A lot of special cases here...
 		else {
-			if (currentPart->second.type == PartType::Intro) {
+			//If the next part is an intro track...
+			if (parts[partName].type == PartType::Intro) {
+				//Set current part as the next part
+				nextPart = currentPart->first;
+				//Play intro part from the start and reset metronome to prevent desynchronisation
+				setPart(partName, 0);
+				metro->beatCounter = 1;
+			}
+
+			else if (currentPart->second.type == PartType::Intro) {
 				nextPart = partName;
 			}
+
 			else if(currentPart->second.type == PartType::Main && parts[partName].type == PartType::Main){
-				setPart(parts[partName].fillTrack, position);
+				setPart(parts[partName].fillTrack, (float)(metro->getBeat() - 1) / metrum);
 				nextPart = partName;
 			}
 			else if (currentPart->second.type == PartType::Fill || currentPart->second.type == PartType::Break) {
@@ -102,7 +113,7 @@ namespace Styler {
 				setPart(partName);
 			}
 			else {
-				setPart(partName, position);
+				setPart(partName, (float)(metro->getBeat()-1)/metrum);
 			}
 		}
 	}

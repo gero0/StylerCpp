@@ -46,7 +46,7 @@ namespace Styler {
 			samplesRead = tracks[currentChord]->read(trackBuffer.get(), bufferSize);
 
 			for (size_t i = 0; i < samplesRead; i++) {
-				buffer[i] = trackBuffer.get()[i]* volume;
+				buffer[i] = trackBuffer.get()[i] * volume;
 			}
 		}
 
@@ -90,6 +90,16 @@ namespace Styler {
 		for (auto& track : tracks) {
 			track.second->setProportionalPosition(position);
 		}
+	}
+
+	float Instrument::getProportionalPosition()
+	{
+		if (tracks.size() < 1) {
+			return 0;
+		}
+
+		auto tr = tracks.begin()->second;
+		return (float)tr->getPosition() / tr->getLength();
 	}
 
 	size_t Instrument::getPosition()

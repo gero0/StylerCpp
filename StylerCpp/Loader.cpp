@@ -43,6 +43,7 @@ namespace Styler {
 		
 		for (auto& part : j["tracks"]) {
 			Part p(bufferSize);
+			p.styleInstrumentCount = s.instruments.size();
 			std::string typeStr = part["Type"];
 			p.type = typeMap[typeStr];
 

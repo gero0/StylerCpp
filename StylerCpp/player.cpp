@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <filesystem>
 
+#include <iostream>
+
 namespace Styler 
 {
 	const int channelCount = 2; //stereo
@@ -15,21 +17,52 @@ namespace Styler
 	const size_t bufferSize = 64;
 
 	Player::Player() : pManager(bufferSize){
-		stream = nullptr;
 		Pa_Initialize();
+		stream = nullptr;
+
+		auto devCount = Pa_GetDeviceCount();
+
+		int listIndex = 0;
+
+		for (int actualIndex = 0; actualIndex < devCount; actualIndex++) {
+			const PaDeviceInfo* deviceInfo = Pa_GetDeviceInfo(actualIndex);
+			
+			if (deviceInfo->maxOutputChannels >= channelCount) {
+				outputDevices.push_back(deviceInfo);
+				outputDevicesIndexMap.insert({ listIndex, actualIndex } );
+				listIndex++;
+			}
+		}
+
+		//Set first output device as active device
+		activeDeviceId = outputDevicesIndexMap.begin()->second;
 	}
 
 	bool Player::initialize() {
+		/*
 		auto error = Pa_OpenDefaultStream(&stream
-			, 0                     /* no input */
-			, channelCount			/* stereo out */
-			, paFloat32             /* floating point */
+			, 0                     //no input
+			, channelCount			// stereo out
+			, paFloat32             // floating point 
 			, sampleRate
 			, bufferSize/channelCount
 			, portAudioCallback
-			, this);			/* we give the callback function pointer to player so it can control it*/
+			, this);			// we give the callback function pointer to player so it can control it
+			
+			*/
+
+		PaStreamParameters params;
+
+		params.channelCount = channelCount;
+		params.device = activeDeviceId;
+		params.hostApiSpecificStreamInfo = NULL;
+		params.sampleFormat = paFloat32;
+		params.suggestedLatency = Pa_GetDeviceInfo(activeDeviceId)->defaultLowOutputLatency;
+
+		auto error = Pa_OpenStream(&stream, NULL, &params, sampleRate, bufferSize/channelCount, paNoFlag, portAudioCallback, this);
 
 		if (error != paNoError) {
+			std::cout << "ERROR: " << Pa_GetErrorText(error);
 			return false;
 		}
 
@@ -72,18 +105,32 @@ namespace Styler
 
 		metronome.metrum = style.metrum;
 		metronome.tempo = style.tempo;
+		metronome.bars = pManager.currentPart->second.length;
 	}
 
 	void Player::setPart(std::string trackName)
 	{
-		/*if (metronome.isRunning()) {
+		if (metronome.isRunning()) {
 			int lastBeat = metronome.getBeat();
 			while (metronome.getBeat() == lastBeat)
 			{
 				//wait
 			}
-		}*/
-		pManager.changePart(trackName, state == PlayerState::Playing, (float)( metronome.getBeat() - 1 )/ style.metrum);
+		}
+
+		
+		pManager.changePart(trackName, state == PlayerState::Playing, &metronome, style.metrum);
+	}
+
+	void Player::changeAudioDevice(size_t index)
+	{
+		if (state == PlayerState::Playing)
+			stop();
+
+		activeDeviceId = outputDevicesIndexMap[index];
+
+		initialize();
+
 	}
 
 	std::vector<std::string> Player::getInstrumentNames()

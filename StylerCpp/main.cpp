@@ -9,12 +9,16 @@
 #include "windows.h"
 #include "MainWindow.h"
 #include <gtkmm.h>
+#include "MidiCom.h"
 
 int main(int argc, char** argv) {
-	
 	auto app = Gtk::Application::create(argc, argv, "org.gtkmm.examples.base");
 	Styler::Player player;
 	player.initialize();
+
+	midi_com::midi_player_ptr = &player;
+	midi_com::enumerateDevices();
+	midi_com::startRecording(0);
 
 	Styler::MainWindow window(&player);
 	window.set_default_size(800, 600);

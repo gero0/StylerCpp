@@ -24,6 +24,7 @@ namespace Styler {
 		void playStop();
 		void loadFromJson(std::string filePath);
 		void setPart(std::string trackName);
+		void changeAudioDevice(size_t index);
 		//full - false - only tracks that can be selected manually
 		//full-true - all tracks
 		std::vector<std::string> getPartNames(bool full = false);
@@ -31,7 +32,10 @@ namespace Styler {
 		PartManager pManager;
 		PlayerState state = PlayerState::NotLoaded;
 		Metronome metronome;
+		std::vector<const PaDeviceInfo*> outputDevices;
+		std::unordered_map<int, int> outputDevicesIndexMap;
 	private:
+		int activeDeviceId = 0;
 		PaStream* stream;
 		Style style;
 	};

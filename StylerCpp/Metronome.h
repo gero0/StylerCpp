@@ -11,13 +11,15 @@ namespace Styler {
         int tempo = 1;
         void start();
         void stop();
+        void reset();
         int getBeat();
         int getBar();
         bool isRunning();
-    private:
         int barCounter = 1;
         int beatCounter = 1;
-        bool looping = false;;
+    private:
+        bool looping = false;
+        bool restart = false;
         std::thread* thread;
         float timePerBeat;
         void loop();

@@ -18,6 +18,7 @@ namespace Styler {
 		void setChord(Chord c);
 		void setPosition(size_t position);
 		void setProportionalPosition(float position);
+		float getProportionalPosition();
 		size_t getPosition();
 		~Instrument();
 	private:

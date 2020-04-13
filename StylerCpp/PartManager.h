@@ -4,6 +4,7 @@
 #include <string>
 #include <mutex>
 #include "Part.h"
+#include "Metronome.h"
 
 
 namespace Styler {
@@ -23,7 +24,7 @@ namespace Styler {
 		void setChord(Chord chord);
 		void setPosition(size_t position);
 		void setProportionalPosition(float position);
-		void changePart(std::string partName, bool isPlaying = false, float position = 0);
+		void changePart(std::string partName, bool isPlaying, Metronome* metro, int metrum);
 
 		float masterVolume = 0.5f;
 		pMap::iterator currentPart;

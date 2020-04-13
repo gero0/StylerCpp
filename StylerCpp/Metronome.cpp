@@ -10,9 +10,19 @@ namespace Styler {
 		thread = new std::thread(&Metronome::loop, this);
 	}
 
+	void Metronome::reset() {
+		restart = true;
+	}
+
 	void Metronome::loop(){
 		while (looping)
 		{
+			if (restart) {
+				beatCounter = 1;
+				barCounter = 1;
+				restart = false;
+			}
+
 			std::this_thread::sleep_for( std::chrono::milliseconds((int)timePerBeat));
 
 			if (beatCounter >= metrum)

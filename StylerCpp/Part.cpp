@@ -41,6 +41,14 @@ namespace Styler {
 		}
 	}
 
+	float Part::getProportionalPosition()
+	{
+		if (instruments.size() < 1)
+			return 0;
+
+		return instruments.begin()->second.getProportionalPosition();
+	}
+
 	std::vector<std::string> Part::getInstrumentNames()
 	{
 		std::vector<std::string> names;
@@ -66,12 +74,18 @@ namespace Styler {
 
 		for (auto& ins : instruments) {
 			auto sRead = ins.second.read(instrumentBuffer.get(), count);
-			//Needed to play drums only
+			//In some cases there may be no more samples to read from one instrument, but still some left in another
+			//samplesRead should return the highest number of samples read from a single instrument
 			if (sRead > samplesRead) {
 				samplesRead = sRead;
 			}
+			//mixing
 			for (int i = 0; i < samplesRead; i++) {
-				buffer[i] += instrumentBuffer[i] * (1.0/instruments.size());
+				buffer[i] += instrumentBuffer[i];
+				if (buffer[i] > 1)
+					buffer[i] = 1;
+				else if (buffer[i] < -1)
+					buffer[i] = -1;
 			}
 		}
 		return samplesRead;

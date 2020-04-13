@@ -10,6 +10,9 @@
     <Filter Include="Other">
       <UniqueIdentifier>{6efc31b7-e7f4-42e6-812b-e9d5f8a478e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MIDI">
+      <UniqueIdentifier>{f516834a-4965-4fb8-9180-6efe506f8664}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp">
@@ -38,6 +41,15 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiCom.cpp">
+      <Filter>MIDI</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiDevice.cpp">
+      <Filter>MIDI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,10 +80,19 @@
     <ClInclude Include="Instrument.h">
       <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Player</Filter>
-    </ClInclude>
     <ClInclude Include="Exceptions.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Rectangle.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiCom.h">
+      <Filter>MIDI</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiDevice.h">
+      <Filter>MIDI</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
       <Filter>Other</Filter>
     </ClInclude>
   </ItemGroup>
