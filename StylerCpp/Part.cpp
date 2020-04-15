@@ -5,7 +5,7 @@ namespace Styler {
 	Part::Part(size_t bufferSize) {
 		instrumentBuffer = { new float[bufferSize], std::default_delete<float[]>() };
 	}
-	
+
 	//TODO: Add some checks later if necessary
 	void Part::addInstrument(std::string name, Instrument instrument) {
 		instruments.insert({ name, instrument });
@@ -79,7 +79,7 @@ namespace Styler {
 			if (sRead > samplesRead) {
 				samplesRead = sRead;
 			}
-			//mixing
+			//mixing (also checks to make sure values are always in [-1,1] interval)
 			for (int i = 0; i < samplesRead; i++) {
 				buffer[i] += instrumentBuffer[i];
 				if (buffer[i] > 1)

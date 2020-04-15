@@ -7,7 +7,7 @@ namespace Styler {
 	}
 
 	Rectangle::Rectangle(int x, int y) : Gtk::Widget()
-	{	
+	{
 		width = x;
 		height = y;
 		set_has_window(true);
@@ -100,6 +100,4 @@ namespace Styler {
 			m_refGdkWindow->set_user_data(gobj());
 		}
 	}
-
-
 }

@@ -63,7 +63,7 @@ namespace midi_com
 	{
 		int matches = 0;
 
-		for(auto note : first)
+		for (auto note : first)
 		{
 			if (std::find(second.begin(), second.end(), note) != second.end())
 				matches++;
@@ -73,7 +73,7 @@ namespace midi_com
 	}
 
 	Styler::Chord detectChord(std::vector<Styler::Note> notes) {
-		for(auto chord : chordNotes)
+		for (auto chord : chordNotes)
 		{
 			if (compareChords(notes, chord.first, chord.first.size()))
 			{
@@ -85,12 +85,12 @@ namespace midi_com
 		return Styler::Chord::None;
 	}
 
-	void chordInterpretLoop(){
+	void chordInterpretLoop() {
 		auto startTime = Clock::now();
 
 		while (recording)
 		{
-			while (std::chrono::duration_cast<std::chrono::milliseconds>( Clock::now() - startTime ).count() <= 15)
+			while (std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - startTime).count() <= 15)
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 			chordMutex.lock();
@@ -138,7 +138,7 @@ namespace midi_com
 		{
 			result = midiDevices[id].openRead();
 		}
-		catch (std::exception& e)
+		catch (std::exception & e)
 		{
 			std::cerr << "Could not open device!: " << e.what();
 			return false;
@@ -156,7 +156,7 @@ namespace midi_com
 		{
 			result = midiDevices[id].closeRead();
 		}
-		catch (std::exception& e)
+		catch (std::exception & e)
 		{
 			std::cerr << "Could not open device!: " << e.what();
 			return false;
@@ -174,9 +174,9 @@ namespace midi_com
 		{
 			result = midiDevices[id].openWrite();
 		}
-		catch (std::exception& e)
+		catch (std::exception & e)
 		{
-			std::cerr << "Could not open device!: " << e.what() ;
+			std::cerr << "Could not open device!: " << e.what();
 			return false;
 		}
 
@@ -184,8 +184,6 @@ namespace midi_com
 	}
 
 	bool closeDeviceWrite(UINT id) {
-
-
 		if (midiDevices.size() <= id)
 			return false;
 
@@ -194,7 +192,7 @@ namespace midi_com
 		{
 			result = midiDevices[id].closeWrite();
 		}
-		catch (std::exception& e)
+		catch (std::exception & e)
 		{
 			std::cerr << "Could not open device!: " << e.what();
 			return false;
@@ -244,13 +242,11 @@ namespace midi_com
 		DWORD_PTR dwParam1,
 		DWORD_PTR dwParam2)
 	{
-
 		if (dwParam1 != MIDI_Active_Sensing && dwParam1 != MIDI_Clock) { //ignore Active Sensing message
 			std::cout << "\nMidi callback: "
 				<< std::hex << wMsg << " "
 				<< dwParam1;
 		}
-
 
 		if (wMsg == MIM_DATA && dwParam1 != MIDI_Active_Sensing)
 		{
@@ -279,7 +275,7 @@ namespace midi_com
 
 		if (status - MIDI_Control_Change == activeMidiChannel) {
 			BYTE vol = *(((BYTE*)(&dwParam1)) + 2);
-			midi_player_ptr->pManager.masterVolume = ( (float)vol / 255);
+			midi_player_ptr->pManager.masterVolume = ((float)vol / 255);
 		}
 
 		if (status - MIDI_Note_On == activeMidiChannel) {
@@ -315,6 +311,4 @@ namespace midi_com
 			NULL
 		);
 	}
-
 } // namespace midi_com
-

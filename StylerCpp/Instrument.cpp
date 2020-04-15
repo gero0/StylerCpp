@@ -3,10 +3,9 @@
 #include <windows.h>
 
 namespace Styler {
-
-	Instrument::Instrument(size_t bufferSize){
+	Instrument::Instrument(size_t bufferSize) {
 		this->bufferSize = bufferSize;
-		
+
 		trackBuffer = { new float[bufferSize], std::default_delete<float[]>() };
 		temp = { new float[bufferSize], std::default_delete<float[]>() };
 	}
@@ -25,9 +24,9 @@ namespace Styler {
 			if (iter != tracks.end())
 				throw new KeyAlreadyExistsException;
 
-			tracks.insert({chord, newTrack});
+			tracks.insert({ chord, newTrack });
 		}
-		catch (const InvalidAudioFileException& e) {
+		catch (const InvalidAudioFileException & e) {
 			throw e;
 		}
 		catch (const std::exception& e) {
@@ -38,10 +37,12 @@ namespace Styler {
 	size_t Instrument::read(float* buffer, size_t count)
 	{
 		size_t samplesRead = 0;
+
 		//clearing the buffers
-		//memset(trackBuffer, 0, sizeof(float) * bufferSize);
 		std::fill(trackBuffer.get(), trackBuffer.get() + count - 1, 0);
 
+		//Because the drum track is supposed to play no matter which chord is selected, we need to check
+		//if this instrument contains either current chord track or drum track
 		if (currentChord != Chord::Drum && tracks.find(currentChord) != tracks.end()) {
 			samplesRead = tracks[currentChord]->read(trackBuffer.get(), bufferSize);
 
@@ -58,8 +59,11 @@ namespace Styler {
 			}
 		}
 
-		for(auto& track : tracks) {
-			if(track.first != currentChord && track.first != Chord::Drum){
+		//read the same amout of samples from other files to temporary buffer
+		//just to keep them synchronised
+		//TODO: find the way to do this properly
+		for (auto& track : tracks) {
+			if (track.first != currentChord && track.first != Chord::Drum) {
 				track.second->read(temp.get(), bufferSize);
 			}
 		}
@@ -69,13 +73,7 @@ namespace Styler {
 
 	void Instrument::setChord(Chord c)
 	{
-		/*auto v = volume;
-		volume = 0;*/
 		currentChord = c;
-		/*while (volume < v) {
-			volume += 0.05f;
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}	*/
 	}
 
 	void Instrument::setPosition(size_t position)
@@ -107,14 +105,12 @@ namespace Styler {
 		//if map is empty return 0
 		if (tracks.size() < 1)
 			return 0;
-		/*else return position of the first track
-		tracks must be equal length and are played all at once so 
-		they should always have the same position*/
+		//else return position of the first track
+		//tracks must be equal length and are played all at once so
+		//they should always have the same position
 		return tracks.begin()->second->getPosition();
 	}
 
 	Instrument::~Instrument() {
-
 	}
 }
-

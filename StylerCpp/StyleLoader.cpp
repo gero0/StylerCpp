@@ -1,6 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include "Loader.h"
+#include "StyleLoader.h"
 #include "Exceptions.h"
 #include "Part.h"
 
@@ -8,17 +8,17 @@ namespace Styler {
 	using json = nlohmann::json;
 	namespace fs = std::filesystem;
 
-	Loader::Loader(size_t bufferSize) {
+	StyleLoader::StyleLoader(size_t bufferSize) {
 		this->bufferSize = bufferSize;
 	}
 
-	Style Loader::loadFromJson(fs::path filePath) {
-
+	//Warning: long and ugly function ahead
+	Style StyleLoader::loadFromJson(fs::path filePath) {
 		//Opening file and checking if it exists
 
 		std::ifstream file(filePath);
 		if (!file)
-			throw new ArgumentException;
+			throw new ArgumentException();
 
 		//Parsing JSON
 
@@ -40,7 +40,7 @@ namespace Styler {
 		fs::path path(filePath);
 
 		auto directory = path.remove_filename();
-		
+
 		for (auto& part : j["tracks"]) {
 			Part p(bufferSize);
 			p.styleInstrumentCount = s.instruments.size();
@@ -57,7 +57,7 @@ namespace Styler {
 			catch (const std::exception & e) {
 				p.fillTrack = "";
 			}
-			
+
 			try {
 				p.length = part["Length"];
 			}
@@ -66,8 +66,7 @@ namespace Styler {
 			}
 
 			std::string name = part["Name"];
-			
-			
+
 			//need to make a copy because append modifies value permanently
 			auto dir = directory;
 			auto partPath = dir.append(name);
@@ -83,18 +82,16 @@ namespace Styler {
 			//it's time to construct objects
 			for (auto& ins : s.instruments) {
 				Instrument instrument(bufferSize);
-				
+
 				for (auto file : files) {
-					
 					//Find files with instrument name in their
 					if (file.find(ins) != std::string::npos) {
-						
 						//Extract the chord name from the file name
 						size_t firstindex = file.find_last_of(" ");
 						size_t lastindex = file.find_last_of(".");
-						
+
 						std::string chordStr = file.substr(firstindex + 1, lastindex - firstindex - 1);
-					
+
 						Chord c = chordMap[chordStr];
 
 						instrument.addTrack(c, file);
@@ -106,5 +103,5 @@ namespace Styler {
 			s.parts.insert({ name, p });
 		}
 		return s;
-	}	
+	}
 }

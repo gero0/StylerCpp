@@ -2,7 +2,6 @@
 #include <iostream>
 
 namespace Styler {
-
 	void Metronome::start()
 	{
 		timePerBeat = 1 / ((float)tempo / 60) * 1000;
@@ -14,7 +13,7 @@ namespace Styler {
 		restart = true;
 	}
 
-	void Metronome::loop(){
+	void Metronome::loop() {
 		while (looping)
 		{
 			if (restart) {
@@ -23,7 +22,7 @@ namespace Styler {
 				restart = false;
 			}
 
-			std::this_thread::sleep_for( std::chrono::milliseconds((int)timePerBeat));
+			std::this_thread::sleep_for(std::chrono::milliseconds((int)timePerBeat));
 
 			if (beatCounter >= metrum)
 			{

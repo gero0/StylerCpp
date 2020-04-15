@@ -23,5 +23,3 @@ namespace Styler {
 		int height = 1;
 	};
 }
-
-

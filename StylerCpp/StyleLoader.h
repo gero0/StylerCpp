@@ -6,10 +6,10 @@
 #include <unordered_map>
 
 namespace Styler {
-	class Loader
+	class StyleLoader
 	{
 	public:
-		Loader(size_t bufferSize);
+		StyleLoader(size_t bufferSize);
 		Style loadFromJson(std::filesystem::path filePath);
 	private:
 		size_t bufferSize;

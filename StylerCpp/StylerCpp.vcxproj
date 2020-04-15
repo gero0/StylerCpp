@@ -144,7 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Instrument.cpp" />
-    <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="StyleLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Metronome.cpp" />
@@ -160,7 +160,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Instrument.h" />
-    <ClInclude Include="Loader.h" />
+    <ClInclude Include="StyleLoader.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Metronome.h" />
     <ClInclude Include="MidiCom.h" />

@@ -14,7 +14,7 @@
 int main(int argc, char** argv) {
 	auto app = Gtk::Application::create(argc, argv, "org.gtkmm.examples.base");
 	Styler::Player player;
-	player.initialize();
+	player.initializeStream();
 
 	midi_com::midi_player_ptr = &player;
 	midi_com::enumerateDevices();

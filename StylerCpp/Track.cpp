@@ -1,7 +1,6 @@
 #include "Track.h"
 #include <sndfile.h>
 namespace Styler {
-
 	Track::Track(std::string filepath, size_t channels, size_t sampleRate) {
 		fileInfo.format = 0;
 		file = sf_open(filepath.c_str(), SFM_READ, &fileInfo);
@@ -35,7 +34,7 @@ namespace Styler {
 
 		setPosition((double)position * length);
 	}
-	
+
 	size_t Track::getLength() const
 	{
 		return length;
@@ -48,8 +47,8 @@ namespace Styler {
 		return samplesRead;
 	}
 
-	Track::~Track(){
-		if(file != nullptr) 
+	Track::~Track() {
+		if (file != nullptr)
 			sf_close(file);
 	}
 }

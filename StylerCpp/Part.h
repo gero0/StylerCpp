@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace Styler{
+namespace Styler {
 	class Part
 	{
 	public:
@@ -29,5 +29,3 @@ namespace Styler{
 		std::unordered_map < std::string, Instrument > instruments;
 	};
 };
-
-

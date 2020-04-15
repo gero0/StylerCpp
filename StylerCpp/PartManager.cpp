@@ -42,7 +42,7 @@ namespace Styler {
 		parts.insert({ partName, part });
 	}
 
-	void PartManager::setPart(std::string partName, float position )
+	void PartManager::setPart(std::string partName, float position)
 	{
 		accessLock.lock();
 		auto previousPart = currentPart;
@@ -65,7 +65,7 @@ namespace Styler {
 				if (parts[partName].type == PartType::Intro) {
 					setPart(partName);
 				}
-				//If it's another intro part, just set it to play instead of current part
+				//If it's another intro part, just set it to play instead of current intro part
 				else {
 					nextPart = partName;
 				}
@@ -84,7 +84,7 @@ namespace Styler {
 				)->first;
 			}
 		}
-		
+
 		//In case something is playing right now...
 		//A lot of special cases here...
 		else {
@@ -101,7 +101,7 @@ namespace Styler {
 				nextPart = partName;
 			}
 
-			else if(currentPart->second.type == PartType::Main && parts[partName].type == PartType::Main){
+			else if (currentPart->second.type == PartType::Main && parts[partName].type == PartType::Main) {
 				setPart(parts[partName].fillTrack, (float)(metro->getBeat() - 1) / metrum);
 				nextPart = partName;
 			}
@@ -113,7 +113,7 @@ namespace Styler {
 				setPart(partName);
 			}
 			else {
-				setPart(partName, (float)(metro->getBeat()-1)/metrum);
+				setPart(partName, (float)(metro->getBeat() - 1) / metrum);
 			}
 		}
 	}

@@ -42,6 +42,7 @@ namespace Styler {
 		Gtk::Button playStopButton;
 
 		Gtk::ComboBoxText audioDevices;
+		Gtk::ComboBoxText audioApis;
 
 		int partCount = 0;
 
@@ -53,6 +54,9 @@ namespace Styler {
 		void masterVolumeSliderHandler(Glib::RefPtr<Gtk::Adjustment> adjustment);
 		void partButtonHandler(std::string part);
 		void drawLeds();
-		void onDeviceChanged();
+		void onApiChanged();
+		void onDeviceChanged();	
+		void setApiComboBox();
+		void setDeviceComboBox();
 	};
 }

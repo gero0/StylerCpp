@@ -5,7 +5,6 @@
 #include "Metronome.h"
 
 namespace Styler {
-
 	enum class PlayerState {
 		Playing,
 		Stopped,
@@ -16,37 +15,44 @@ namespace Styler {
 	public:
 		Player();
 		~Player();
-		//The number of samples read by last call of the portAudioCallback
-		int samplesRead = 0;
-		bool initialize();
+
+		PartManager pManager;
+		Metronome metronome;
+		PlayerState state = PlayerState::NotLoaded;
+
+		bool initializeStream();
 		void play();
 		void stop();
 		void playStop();
 		void loadFromJson(std::string filePath);
 		void setPart(std::string trackName);
-		void changeAudioDevice(size_t index);
-		//full - false - only tracks that can be selected manually
-		//full-true - all tracks
-		std::vector<std::string> getPartNames(bool full = false);
-		std::vector<std::string> getInstrumentNames();
-		PartManager pManager;
-		PlayerState state = PlayerState::NotLoaded;
-		Metronome metronome;
+		void setAudioDevice(size_t index);
+		void setHostApi(size_t index);
+
+		const std::vector<const PaDeviceInfo*> getOutputDevices() const { return outputDevices; }
+		const std::vector<const PaHostApiInfo*> getAudioApis() const { return hostApis; }
+		const std::vector<std::string> getPartNames(bool includeFill = false) const;
+		const std::vector<std::string> getInstrumentNames() const;
+		
+	private:
+		int activeHostApiId = 0;
+		int activeDeviceId = 0;
+		PaStream* stream = nullptr;
+		Style style;
+
+		void enumerateApis();
+		void enumerateDevices();
+		std::vector<const PaHostApiInfo*> hostApis;
 		std::vector<const PaDeviceInfo*> outputDevices;
 		std::unordered_map<int, int> outputDevicesIndexMap;
-	private:
-		int activeDeviceId = 0;
-		PaStream* stream;
-		Style style;
 	};
-
 
 	/*
 	The PortAudio callback function.
 	It reads samples from the main buffer,
 	and plays the sound
 	*/
-	static int portAudioCallback (
+	static int portAudioCallback(
 		const void* inputBuffer,
 		void* outputBuffer,
 		unsigned long framesPerBuffer,
@@ -59,34 +65,30 @@ namespace Styler {
 		size_t count = (double)framesPerBuffer * 2;
 
 		memset(output, 0, sizeof(float) * framesPerBuffer * 2);
-		
+
 		Player* player = (Player*)userData;
 		PartManager& manager = player->pManager;
 
 		auto framesRead = manager.readStream(output, 0, count);
 
 		if (framesRead < count) {
-
 			switch (manager.currentPart->second.type) {
-				case PartType::Main:
-					manager.currentPart->second.setPosition(0);
-					break;
-				case PartType::Ending:
-					player->state = PlayerState::Stopped;
-					manager.setPosition(0);
-					manager.setChord(Chord::Drum);
-					player->metronome.stop();
-					return paComplete;
-					break;
-				default:
-					manager.setPart(manager.nextPart);
-					break;
+			case PartType::Main:
+				manager.currentPart->second.setPosition(0);
+				break;
+			case PartType::Ending:
+				player->state = PlayerState::Stopped;
+				manager.setPosition(0);
+				manager.setChord(Chord::Drum);
+				player->metronome.stop();
+				return paComplete;
+				break;
+			default:
+				manager.setPart(manager.nextPart);
+				break;
 			}
 		}
-	
+
 		return paContinue;
 	}
-
-	
 }
-

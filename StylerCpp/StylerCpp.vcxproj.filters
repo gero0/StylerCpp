@@ -21,9 +21,6 @@
     <ClCompile Include="Instrument.cpp">
       <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="Loader.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
     <ClCompile Include="Metronome.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -51,6 +48,9 @@
     <ClCompile Include="MidiDevice.cpp">
       <Filter>MIDI</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLoader.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow.h">
@@ -74,9 +74,6 @@
     <ClInclude Include="Metronome.h">
       <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="Loader.h">
-      <Filter>Player</Filter>
-    </ClInclude>
     <ClInclude Include="Instrument.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -94,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Enums.h">
       <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="StyleLoader.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,7 +6,6 @@
 #include "Part.h"
 #include "Metronome.h"
 
-
 namespace Styler {
 	using pMap = std::unordered_map<std::string, Part>;
 
@@ -32,12 +31,11 @@ namespace Styler {
 	private:
 		pMap parts;
 		float* sampleBuffer;
+		//locks access to buffer. Prevents switching tracks during reading buffer
 		std::mutex accessLock;
 		size_t bufferSize = 0;
 		Chord currentChord = Chord::None;
 
 		//temporary
-		
 	};
 }
-
