@@ -15,7 +15,11 @@ namespace Styler {
 	{
 	public:
 		PartManager(size_t bufferSize);
-		size_t readStream(float* buffer, size_t offset, size_t count);
+
+		float masterVolume = 0.5f;
+		pMap::iterator currentPart;
+		std::string nextPart = "";
+
 		void addParts(pMap partMap);
 		void addPart(std::string partname, Part part);
 		void setPart(std::string partName, float position = 0);
@@ -25,17 +29,14 @@ namespace Styler {
 		void setProportionalPosition(float position);
 		void changePart(std::string partName, bool isPlaying, Metronome* metro, int metrum);
 
-		float masterVolume = 0.5f;
-		pMap::iterator currentPart;
-		std::string nextPart = "";
+		size_t readStream(float* buffer, size_t offset, size_t count);
+	
 	private:
+		size_t bufferSize = 0;
+		Chord currentChord = Chord::None;
 		pMap parts;
 		float* sampleBuffer;
 		//locks access to buffer. Prevents switching tracks during reading buffer
 		std::mutex accessLock;
-		size_t bufferSize = 0;
-		Chord currentChord = Chord::None;
-
-		//temporary
 	};
 }

@@ -37,7 +37,7 @@ namespace Styler {
 				beatCounter++;
 			}
 
-			std::cout << "Beat: " << beatCounter << " Bar:" << barCounter << "\n";
+			//std::cout << "Beat: " << beatCounter << " Bar:" << barCounter << "\n";
 		}
 	}
 

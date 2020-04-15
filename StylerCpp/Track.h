@@ -9,12 +9,16 @@ namespace Styler {
 	public:
 		Track(std::string filepath, size_t channels = 2, size_t sampleRate = 44100);
 		~Track();
-		size_t getPosition() const;
+
+		float volume = 1;
+		
 		void setPosition(size_t position);
 		void setProportionalPosition(float position);
+
+		size_t getPosition() const;
 		size_t getLength() const;
 		size_t read(float* buffer, size_t count);
-		float volume = 1;
+		
 	private:
 		size_t position = 0;
 		size_t length = 0;

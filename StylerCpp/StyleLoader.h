@@ -11,6 +11,7 @@ namespace Styler {
 	public:
 		StyleLoader(size_t bufferSize);
 		Style loadFromJson(std::filesystem::path filePath);
+
 	private:
 		size_t bufferSize;
 
